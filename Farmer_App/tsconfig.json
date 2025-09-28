@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                     // modern JS target for Node + Expo
+    "module": "CommonJS",                   // Node-compatible module system
+    "strict": true,
+    "jsx": "react-native",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["react", "react-native", "node"], // include Node types for scripts
+    "outDir": "dist"                        // optional, for compiled JS
+  },
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ],
+  "extends": "expo/tsconfig.base"
+}
