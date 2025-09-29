@@ -140,5 +140,5 @@ We welcome collaborators! Current needs:
 
 ## 📜 License
 
-MIT License — free to use and adapt for social impact projects.
+MIT License — Strictly the property of DIRA.
 
