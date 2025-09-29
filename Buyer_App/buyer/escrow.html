@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escrow Transactions - AgriChain Buyer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --secondary: #FF9800;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --background: #F8F9FA;
+            --white: #FFFFFF;
+            --border: #E0E0E0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .logo-text {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .user-role {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 10px 0;
+        }
+        
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            min-width: 70px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* Escrow Dashboard */
+        .dashboard {
+            padding: 30px 0;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        
+        .icon-primary {
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+        }
+        
+        .icon-warning {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .icon-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        
+        .icon-secondary {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .filters-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+        }
+        
+        .filter-tab.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-family: 'Open Sans', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: var(--white);
+        }
+        
+        /* Escrow List */
+        .escrow-list {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .escrow-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .escrow-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .escrow-items {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .escrow-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 15px;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        
+        .escrow-item:hover {
+            background: #f9f9f9;
+        }
+        
+        .escrow-item:last-child {
+            border-bottom: none;
+        }
+        
+        .escrow-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+        }
+        
+        .escrow-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .escrow-product {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .escrow-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .escrow-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .escrow-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+        }
+        
+        .status-released {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        
+        .status-disputed {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-cancelled {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+        }
+        
+        .escrow-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: right;
+        }
+        
+        .escrow-date {
+            font-size: 14px;
+            color: var(--text-light);
+            text-align: right;
+        }
+        
+        .escrow-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        /* Escrow Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 25px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        
+        .escrow-detail-section {
+            margin-bottom: 25px;
+        }
+        
+        .detail-section-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary-dark);
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .detail-item {
+            margin-bottom: 12px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            font-size: 15px;
+        }
+        
+        .transaction-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .transaction-id {
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .transaction-id:hover {
+            background: #e0e0e0;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        /* Dispute Section */
+        .dispute-section {
+            background: #fff3e0;
+            border: 1px solid #ffb74d;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .dispute-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .dispute-icon {
+            color: var(--warning);
+            font-size: 20px;
+        }
+        
+        .dispute-title {
+            font-weight: 600;
+            color: var(--warning);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .stats-overview {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .escrow-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .escrow-meta {
+                justify-content: center;
+            }
+            
+            .escrow-amount, .escrow-date {
+                text-align: center;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header-content {
+                padding: 10px 0;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-tabs {
+                justify-content: center;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .escrow-actions {
+                flex-direction: column;
+            }
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
+        .no-escrows {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🌱</div>
+                    <div class="logo-text">AgriChain Buyer</div>
+                </div>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-name">Global Foods Inc.</div>
+                        <div class="user-role">Buyer</div>
+                    </div>
+                    <div class="avatar">GF</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Escrow Dashboard -->
+    <div class="container">
+        <div class="dashboard">
+            <div class="page-header">
+                <h1 class="page-title">Escrow Transactions</h1>
+                <button class="btn btn-outline" id="exportReport">
+                    <i class="fas fa-download"></i>
+                    Export Report
+                </button>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-overview" id="statsOverview">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-primary">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Active Escrows</div>
+                            <div class="stat-value" id="activeEscrows">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-warning">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">In Dispute</div>
+                            <div class="stat-value" id="disputedEscrows">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Completed</div>
+                            <div class="stat-value" id="completedEscrows">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-secondary">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Total in Escrow</div>
+                            <div class="stat-value" id="totalEscrow">0 HBAR</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filters-tabs">
+                <div class="filter-tab active" data-filter="all">All Escrows</div>
+                <div class="filter-tab" data-filter="active">Active</div>
+                <div class="filter-tab" data-filter="released">Released</div>
+                <div class="filter-tab" data-filter="disputed">In Dispute</div>
+                <div class="filter-tab" data-filter="cancelled">Cancelled</div>
+            </div>
+
+            <!-- Escrow List -->
+            <div class="escrow-list">
+                <div class="escrow-header">
+                    <h2 class="escrow-title">Recent Escrow Transactions</h2>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="escrowSearch" placeholder="Search escrows..." style="padding: 8px 12px 8px 30px; border: 1px solid var(--border); border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="escrow-items" id="escrowItems">
+                    <div class="loading-message">Loading escrow transactions...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="buy.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Market</span>
+            </a>
+            <a href="purchase.html" class="nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Purchases</span>
+            </a>
+            <a href="escrow.html" class="nav-item active">
+                <i class="fas fa-file-contract"></i>
+                <span>Escrow</span>
+            </a>
+            <a href="wallet.html" class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Escrow Details Modal -->
+    <div class="modal" id="escrowModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Escrow Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="escrow-detail-section">
+                <h4 class="detail-section-title">Transaction Information</h4>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Product</div>
+                        <div class="detail-value" id="modalProduct">Premium Wheat Harvest</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Farmer</div>
+                        <div class="detail-value" id="modalFarmer">Rajesh Kumar</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Amount in Escrow</div>
+                        <div class="detail-value" id="modalAmount">1,250 HBAR</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Escrow Created</div>
+                        <div class="detail-value" id="modalCreatedDate">October 18, 2023 14:30 IST</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Auto-Release Date</div>
+                        <div class="detail-value" id="modalReleaseDate">October 28, 2023 14:30 IST</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value"><span class="escrow-status status-active">Active</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="escrow-detail-section">
+                <h4 class="detail-section-title">Blockchain Details</h4>
+                <div class="transaction-info">
+                    <div class="detail-item">
+                        <div class="detail-label">Escrow Contract Address</div>
+                        <div class="transaction-id">0.0.9876543</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Payment Transaction ID</div>
+                        <div class="transaction-id" id="modalTransactionId">0.0.1234567-1234567890</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Escrow Contract Hash</div>
+                        <div class="transaction-id">a1b2c3d4e5f67890abcdef1234567890</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="escrow-detail-section">
+                <h4 class="detail-section-title">Escrow Progress</h4>
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Time Remaining</span>
+                        <span id="timeRemaining">5 days</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 60%"></div>
+                    </div>
+                </div>
+                
+                <div class="detail-item" style="margin-top: 15px;">
+                    <div class="detail-label">Delivery Status</div>
+                    <div class="detail-value" id="deliveryStatus">In transit - Expected delivery: Oct 25, 2023</div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-success" id="releaseFunds">
+                    <i class="fas fa-check"></i>
+                    Release Funds to Farmer
+                </button>
+                <button class="btn btn-warning" id="raiseDispute">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Raise Dispute
+                </button>
+                <button class="btn btn-outline" id="closeEscrowModal">
+                    <i class="fas fa-times"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Release Confirmation Modal -->
+    <div class="modal" id="releaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Release</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="transaction-info">
+                <p>You are about to release <strong id="releaseAmount">1,250 HBAR</strong> from escrow to farmer <strong id="releaseFarmer">Rajesh Kumar</strong>.</p>
+                <p>This action is irreversible. Please confirm that you have received the product and are satisfied with the quality.</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-success" id="confirmRelease">
+                    <i class="fas fa-check"></i>
+                    Confirm Release
+                </button>
+                <button class="btn btn-outline" id="cancelRelease">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let escrows = [];
+        let currentEscrow = null;
+
+        // Load escrows on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEscrows();
+            setupEventListeners();
+        });
+
+        // Load escrows from backend
+        async function loadEscrows(filters = {}) {
+            try {
+                showLoading();
+                const params = new URLSearchParams(filters);
+                const response = await fetch(`buyer_backend.php?action=get_escrow&${params}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    escrows = result.data;
+                    displayEscrows(escrows);
+                    updateStats(escrows);
+                } else {
+                    console.error('Error loading escrows:', result.error);
+                    showError('Failed to load escrows: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error loading escrows');
+            }
+        }
+
+        // Show loading state
+        function showLoading() {
+            const container = document.getElementById('escrowItems');
+            container.innerHTML = '<div class="loading-message">Loading escrow transactions...</div>';
+        }
+
+        // Display escrows in list
+        function displayEscrows(escrows) {
+            const container = document.getElementById('escrowItems');
+            
+            if (escrows.length === 0) {
+                container.innerHTML = '<div class="no-escrows">No escrow transactions found matching your criteria.</div>';
+                return;
+            }
+
+            container.innerHTML = escrows.map(escrow => `
+                <div class="escrow-item" data-status="${escrow.status.toLowerCase()}">
+                    <div class="escrow-icon">
+                        <i class="fas fa-${getProductIcon(escrow.product_name)}"></i>
+                    </div>
+                    <div class="escrow-details">
+                        <div class="escrow-product">${escapeHtml(escrow.product_name)}</div>
+                        <div class="escrow-meta">
+                            <span><i class="fas fa-user"></i> ${escapeHtml(escrow.farmer_name)}</span>
+                            <span><i class="fas fa-calendar"></i> ${new Date(escrow.created_date).toLocaleDateString()}</span>
+                            <span><i class="fas fa-receipt"></i> TX: ${escrow.transaction_hash || 'Pending'}</span>
+                        </div>
+                        ${escrow.status === 'DISPUTED' ? `
+                            <div class="dispute-section">
+                                <div class="dispute-header">
+                                    <i class="fas fa-exclamation-triangle dispute-icon"></i>
+                                    <div class="dispute-title">Dispute Raised</div>
+                                </div>
+                                <p>Quality issue reported. Under review by AgriChain arbitration.</p>
+                            </div>
+                        ` : `
+                            <div class="progress-container">
+                                <div class="progress-label">
+                                    <span>Escrow ${getProgressStatus(escrow.status)}</span>
+                                    <span>${getRemainingTime(escrow)}</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${getProgressWidth(escrow)}%"></div>
+                                </div>
+                            </div>
+                        `}
+                        <div class="escrow-actions">
+                            <button class="btn btn-outline btn-small view-details" data-id="${escrow.id}">
+                                <i class="fas fa-eye"></i>
+                                Details
+                            </button>
+                            ${escrow.status === 'ACTIVE' ? `
+                                <button class="btn btn-success btn-small release-funds" data-id="${escrow.id}">
+                                    <i class="fas fa-check"></i>
+                                    Release
+                                </button>
+                            ` : escrow.status === 'DISPUTED' ? `
+                                <button class="btn btn-warning btn-small">
+                                    <i class="fas fa-gavel"></i>
+                                    Resolve
+                                </button>
+                            ` : escrow.status === 'RELEASED' ? `
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-file-invoice"></i>
+                                    Receipt
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="escrow-status status-${getStatusClass(escrow.status)}">${getStatusText(escrow.status)}</div>
+                        <div class="escrow-amount">${escrow.amount_hbar} HBAR</div>
+                        <div class="escrow-date">${getEscrowDate(escrow)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStats(escrows) {
+            const active = escrows.filter(e => e.status === 'ACTIVE').length;
+            const disputed = escrows.filter(e => e.status === 'DISPUTED').length;
+            const completed = escrows.filter(e => e.status === 'RELEASED').length;
+            const total = escrows.reduce((sum, e) => sum + parseFloat(e.amount_hbar), 0);
+
+            document.getElementById('activeEscrows').textContent = active;
+            document.getElementById('disputedEscrows').textContent = disputed;
+            document.getElementById('completedEscrows').textContent = completed;
+            document.getElementById('totalEscrow').textContent = total.toFixed(2) + ' HBAR';
+        }
+
+        // Get product icon
+        function getProductIcon(productName) {
+            const name = (productName || '').toLowerCase();
+            if (name.includes('wheat')) return 'wheat-alt';
+            if (name.includes('rice')) return 'seedling';
+            if (name.includes('corn')) return 'corn';
+            if (name.includes('potato')) return 'potato';
+            return 'seedling';
+        }
+
+        // Get progress status text
+        function getProgressStatus(status) {
+            const statuses = {
+                'ACTIVE': 'Active',
+                'RELEASED': 'Completed',
+                'DISPUTED': 'In Dispute',
+                'CANCELLED': 'Cancelled'
+            };
+            return statuses[status] || status;
+        }
+
+        // Get remaining time
+        function getRemainingTime(escrow) {
+            if (escrow.status === 'RELEASED') return 'Funds released to farmer';
+            if (escrow.status === 'DISPUTED') return 'Under review';
+            
+            const created = new Date(escrow.created_date);
+            const release = new Date(created);
+            release.setDate(release.getDate() + 10); // 10-day escrow period
+            const now = new Date();
+            const daysLeft = Math.ceil((release - now) / (1000 * 60 * 60 * 24));
+            
+            return daysLeft > 0 ? `${daysLeft} days remaining` : 'Ready for release';
+        }
+
+        // Get progress width
+        function getProgressWidth(escrow) {
+            if (escrow.status === 'RELEASED') return 100;
+            if (escrow.status === 'DISPUTED') return 50;
+            
+            const created = new Date(escrow.created_date);
+            const release = new Date(created);
+            release.setDate(release.getDate() + 10);
+            const now = new Date();
+            const total = release - created;
+            const elapsed = now - created;
+            
+            return Math.min(100, Math.max(0, (elapsed / total) * 100));
+        }
+
+        // Get status class
+        function getStatusClass(status) {
+            const classes = {
+                'ACTIVE': 'active',
+                'RELEASED': 'released',
+                'DISPUTED': 'disputed',
+                'CANCELLED': 'cancelled'
+            };
+            return classes[status] || 'active';
+        }
+
+        // Get status text
+        function getStatusText(status) {
+            const texts = {
+                'ACTIVE': 'Active',
+                'RELEASED': 'Released',
+                'DISPUTED': 'In Dispute',
+                'CANCELLED': 'Cancelled'
+            };
+            return texts[status] || status;
+        }
+
+        // Get escrow date text
+        function getEscrowDate(escrow) {
+            if (escrow.released_date) {
+                return new Date(escrow.released_date).toLocaleDateString();
+            } else if (escrow.release_date) {
+                return 'Est. ' + new Date(escrow.release_date).toLocaleDateString();
+            } else {
+                const release = new Date(escrow.created_date);
+                release.setDate(release.getDate() + 10);
+                return 'Est. ' + release.toLocaleDateString();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Filter tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    loadEscrows({ status: filter });
+                });
+            });
+
+            // Search
+            document.getElementById('escrowSearch').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filtered = escrows.filter(escrow => 
+                    escrow.product_name.toLowerCase().includes(searchTerm) ||
+                    escrow.farmer_name.toLowerCase().includes(searchTerm) ||
+                    escrow.batch_id.toLowerCase().includes(searchTerm)
+                );
+                displayEscrows(filtered);
+            });
+
+            // View details and release funds (delegated)
+            document.getElementById('escrowItems').addEventListener('click', function(e) {
+                if (e.target.closest('.view-details')) {
+                    const escrowId = e.target.closest('.view-details').dataset.id;
+                    showEscrowDetails(escrowId);
+                }
+                if (e.target.closest('.release-funds')) {
+                    const escrowId = e.target.closest('.release-funds').dataset.id;
+                    showReleaseConfirmation(escrowId);
+                }
+            });
+
+            // Modal events
+            document.getElementById('closeEscrowModal').addEventListener('click', closeEscrowModal);
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.getElementById('escrowModal').style.display = 'none';
+                    document.getElementById('releaseModal').style.display = 'none';
+                });
+            });
+
+            // Release confirmation
+            document.getElementById('confirmRelease').addEventListener('click', confirmRelease);
+            document.getElementById('cancelRelease').addEventListener('click', cancelRelease);
+
+            // Raise dispute
+            document.getElementById('raiseDispute').addEventListener('click', raiseDispute);
+
+            // Export report
+            document.getElementById('exportReport').addEventListener('click', exportReport);
+        }
+
+        // Show escrow details
+        function showEscrowDetails(escrowId) {
+            currentEscrow = escrows.find(e => e.id === escrowId);
+            if (!currentEscrow) return;
+
+            // Update modal content
+            document.getElementById('modalProduct').textContent = currentEscrow.product_name;
+            document.getElementById('modalFarmer').textContent = currentEscrow.farmer_name;
+            document.getElementById('modalAmount').textContent = currentEscrow.amount_hbar + ' HBAR';
+            document.getElementById('modalCreatedDate').textContent = new Date(currentEscrow.created_date).toLocaleString();
+            
+            const releaseDate = new Date(currentEscrow.created_date);
+            releaseDate.setDate(releaseDate.getDate() + 10);
+            document.getElementById('modalReleaseDate').textContent = releaseDate.toLocaleString();
+            
+            document.getElementById('modalTransactionId').textContent = currentEscrow.transaction_hash || 'Pending';
+            document.getElementById('timeRemaining').textContent = getRemainingTime(currentEscrow);
+            document.getElementById('progressFill').style.width = getProgressWidth(currentEscrow) + '%';
+            document.getElementById('deliveryStatus').textContent = getDeliveryStatus(currentEscrow);
+
+            // Update status display
+            const statusElement = document.querySelector('#escrowModal .escrow-status');
+            statusElement.className = 'escrow-status status-' + getStatusClass(currentEscrow.status);
+            statusElement.textContent = getStatusText(currentEscrow.status);
+
+            // Show/hide action buttons based on status
+            const releaseBtn = document.getElementById('releaseFunds');
+            const disputeBtn = document.getElementById('raiseDispute');
+            
+            if (currentEscrow.status === 'ACTIVE') {
+                releaseBtn.style.display = 'inline-flex';
+                disputeBtn.style.display = 'inline-flex';
+            } else {
+                releaseBtn.style.display = 'none';
+                disputeBtn.style.display = 'none';
+            }
+
+            // Show modal
+            document.getElementById('escrowModal').style.display = 'flex';
+        }
+
+        // Get delivery status
+        function getDeliveryStatus(escrow) {
+            if (escrow.status === 'RELEASED') return 'Delivered - Funds released to farmer';
+            if (escrow.status === 'DISPUTED') return 'Delivery disputed - Under review';
+            return 'In transit - Expected delivery soon';
+        }
+
+        // Show release confirmation
+        function showReleaseConfirmation(escrowId) {
+            currentEscrow = escrows.find(e => e.id === escrowId);
+            if (!currentEscrow) return;
+
+            document.getElementById('releaseAmount').textContent = currentEscrow.amount_hbar + ' HBAR';
+            document.getElementById('releaseFarmer').textContent = currentEscrow.farmer_name;
+            document.getElementById('releaseModal').style.display = 'flex';
+        }
+
+        // Confirm release
+        async function confirmRelease() {
+            if (!currentEscrow) return;
+
+            try {
+                const confirmBtn = document.getElementById('confirmRelease');
+                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                confirmBtn.disabled = true;
+
+                const response = await fetch('buyer_backend.php?action=release_escrow', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        escrow_id: currentEscrow.id
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSuccess('Funds successfully released to farmer!');
+                    closeEscrowModal();
+                    document.getElementById('releaseModal').style.display = 'none';
+                    loadEscrows(); // Refresh list
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                showError('Release failed: ' + error.message);
+            } finally {
+                const confirmBtn = document.getElementById('confirmRelease');
+                confirmBtn.innerHTML = '<i class="fas fa-check"></i> Confirm Release';
+                confirmBtn.disabled = false;
+            }
+        }
+
+        // Cancel release
+        function cancelRelease() {
+            document.getElementById('releaseModal').style.display = 'none';
+        }
+
+        // Close escrow modal
+        function closeEscrowModal() {
+            document.getElementById('escrowModal').style.display = 'none';
+        }
+
+        // Raise dispute
+        function raiseDispute() {
+            alert('Dispute form would open here. This would allow you to report issues with the delivery or product quality.');
+            // In a real app, this would open a dispute form
+        }
+
+        // Export report
+        function exportReport() {
+            const data = JSON.stringify(escrows, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'escrow-report.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Utility functions
+        function showError(message) {
+            alert('Error: ' + message);
+        }
+
+        function showSuccess(message) {
+            alert('Success: ' + message);
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('escrowModal')) {
+                closeEscrowModal();
+            }
+            if (event.target === document.getElementById('releaseModal')) {
+                cancelRelease();
+            }
+        });
+
+        // Close modals with escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeEscrowModal();
+                cancelRelease();
+            }
+        });
+
+        // Bottom navigation active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

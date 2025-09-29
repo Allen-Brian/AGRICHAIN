@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Purchases - AgriChain Buyer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --secondary: #FF9800;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --background: #F8F9FA;
+            --white: #FFFFFF;
+            --border: #E0E0E0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .logo-text {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .user-role {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 10px 0;
+        }
+        
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            min-width: 70px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* Purchases Dashboard */
+        .dashboard {
+            padding: 30px 0;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        
+        .icon-primary {
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+        }
+        
+        .icon-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        
+        .icon-warning {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .icon-secondary {
+            background: rgba(121, 85, 72, 0.1);
+            color: #795548;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .filters-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+        }
+        
+        .filter-tab.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-family: 'Open Sans', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+        
+        /* Purchases List */
+        .purchases-list {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .purchases-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .purchases-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .purchase-items {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .purchase-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 15px;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        
+        .purchase-item:hover {
+            background: #f9f9f9;
+        }
+        
+        .purchase-item:last-child {
+            border-bottom: none;
+        }
+        
+        .purchase-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+        }
+        
+        .purchase-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .purchase-product {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .purchase-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .purchase-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .purchase-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-delivered {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        
+        .status-shipped {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-pending {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+        }
+        
+        .status-cancelled {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+        }
+        
+        .purchase-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: right;
+        }
+        
+        .purchase-date {
+            font-size: 14px;
+            color: var(--text-light);
+            text-align: right;
+        }
+        
+        .purchase-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        /* Purchase Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 25px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        
+        .purchase-detail-section {
+            margin-bottom: 25px;
+        }
+        
+        .detail-section-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary-dark);
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .detail-item {
+            margin-bottom: 12px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            font-size: 15px;
+        }
+        
+        .transaction-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .transaction-id {
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .transaction-id:hover {
+            background: #e0e0e0;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        /* Delivery Timeline */
+        .delivery-timeline {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .delivery-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-light);
+        }
+        
+        .timeline-step {
+            display: flex;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .timeline-step.completed .timeline-dot {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        
+        .timeline-step.current .timeline-dot {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .timeline-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--white);
+            z-index: 1;
+            margin-right: 15px;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            padding-bottom: 5px;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-date {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .stats-overview {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .purchase-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .purchase-meta {
+                justify-content: center;
+            }
+            
+            .purchase-amount, .purchase-date {
+                text-align: center;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header-content {
+                padding: 10px 0;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-tabs {
+                justify-content: center;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
+        .no-purchases {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🌱</div>
+                    <div class="logo-text">AgriChain Buyer</div>
+                </div>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-name">Global Foods Inc.</div>
+                        <div class="user-role">Buyer</div>
+                    </div>
+                    <div class="avatar">GF</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Purchases Dashboard -->
+    <div class="container">
+        <div class="dashboard">
+            <div class="page-header">
+                <h1 class="page-title">My Purchases</h1>
+                <button class="btn btn-outline" id="exportHistory">
+                    <i class="fas fa-download"></i>
+                    Export History
+                </button>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-overview" id="statsOverview">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-primary">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Total Purchases</div>
+                            <div class="stat-value" id="totalPurchases">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Delivered</div>
+                            <div class="stat-value" id="deliveredCount">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-warning">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">In Transit</div>
+                            <div class="stat-value" id="inTransitCount">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-secondary">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Total Spent</div>
+                            <div class="stat-value" id="totalSpent">0 HBAR</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filters-tabs">
+                <div class="filter-tab active" data-filter="all">All Purchases</div>
+                <div class="filter-tab" data-filter="delivered">Delivered</div>
+                <div class="filter-tab" data-filter="shipped">In Transit</div>
+                <div class="filter-tab" data-filter="pending">Pending</div>
+                <div class="filter-tab" data-filter="cancelled">Cancelled</div>
+            </div>
+
+            <!-- Purchases List -->
+            <div class="purchases-list">
+                <div class="purchases-header">
+                    <h2 class="purchases-title">Recent Purchases</h2>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="purchaseSearch" placeholder="Search purchases..." style="padding: 8px 12px 8px 30px; border: 1px solid var(--border); border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="purchase-items" id="purchaseItems">
+                    <div class="loading-message">Loading purchases...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-items">
+           <a href="buy.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Market</span>
+            </a>
+            <a href="purchase.html" class="nav-item active">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Purchases</span>
+            </a>
+            <a href="escrow.html" class="nav-item">
+                <i class="fas fa-file-contract"></i>
+                <span>Escrow</span>
+            </a>
+            <a href="wallet.html" class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Purchase Details Modal -->
+    <div class="modal" id="purchaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Purchase Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="purchase-detail-section">
+                <h4 class="detail-section-title">Product Information</h4>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Product</div>
+                        <div class="detail-value" id="modalProduct">Premium Wheat Harvest</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Farmer</div>
+                        <div class="detail-value" id="modalFarmer">Rajesh Kumar</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Harvest Date</div>
+                        <div class="detail-value" id="modalHarvestDate">October 15, 2023</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Weight</div>
+                        <div class="detail-value" id="modalWeight">450 kg</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Location</div>
+                        <div class="detail-value" id="modalLocation">Punjab, India</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Batch ID</div>
+                        <div class="detail-value" id="modalBatchId">AC-2023-WHT-001</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="purchase-detail-section">
+                <h4 class="detail-section-title">Transaction Details</h4>
+                <div class="transaction-info">
+                    <div class="detail-item">
+                        <div class="detail-label">Payment Amount</div>
+                        <div class="detail-value" id="modalAmount">1,250 HBAR</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Transaction ID</div>
+                        <div class="transaction-id" id="modalTransactionId">0.0.1234567-1234567890</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Payment Date</div>
+                        <div class="detail-value" id="modalPaymentDate">October 18, 2023 14:30 IST</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Escrow Release</div>
+                        <div class="detail-value" id="modalEscrowRelease">Upon delivery confirmation</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="purchase-detail-section">
+                <h4 class="detail-section-title">Delivery Status</h4>
+                <div class="delivery-timeline" id="deliveryTimeline">
+                    <div class="timeline-step completed">
+                        <div class="timeline-dot">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Order Confirmed</div>
+                            <div class="timeline-date">Oct 18, 2023 14:30</div>
+                        </div>
+                    </div>
+                    <div class="timeline-step completed">
+                        <div class="timeline-dot">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Payment Processed</div>
+                            <div class="timeline-date">Oct 18, 2023 14:35</div>
+                        </div>
+                    </div>
+                    <div class="timeline-step completed">
+                        <div class="timeline-dot">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Shipped</div>
+                            <div class="timeline-date">Oct 19, 2023 09:15</div>
+                        </div>
+                    </div>
+                    <div class="timeline-step completed">
+                        <div class="timeline-dot">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Out for Delivery</div>
+                            <div class="timeline-date">Oct 21, 2023 11:30</div>
+                        </div>
+                    </div>
+                    <div class="timeline-step completed">
+                        <div class="timeline-dot">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Delivered</div>
+                            <div class="timeline-date">Oct 22, 2023 15:45</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="viewOnExplorer">
+                    <i class="fas fa-external-link-alt"></i>
+                    View on Explorer
+                </button>
+                <button class="btn btn-primary" id="closePurchaseModal">
+                    <i class="fas fa-check"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let purchases = [];
+        let currentPurchase = null;
+
+        // Load purchases on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPurchases();
+            setupEventListeners();
+        });
+
+        // Load purchases from backend
+        async function loadPurchases(filters = {}) {
+            try {
+                showLoading();
+                const params = new URLSearchParams(filters);
+                const response = await fetch(`buyer_backend.php?action=get_purchases&${params}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    purchases = result.data;
+                    displayPurchases(purchases);
+                    updateStats(purchases);
+                } else {
+                    console.error('Error loading purchases:', result.error);
+                    showError('Failed to load purchases: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error loading purchases');
+            }
+        }
+
+        // Show loading state
+        function showLoading() {
+            const container = document.getElementById('purchaseItems');
+            container.innerHTML = '<div class="loading-message">Loading purchases...</div>';
+        }
+
+        // Display purchases in list
+        function displayPurchases(purchases) {
+            const container = document.getElementById('purchaseItems');
+            
+            if (purchases.length === 0) {
+                container.innerHTML = '<div class="no-purchases">No purchases found matching your criteria.</div>';
+                return;
+            }
+
+            container.innerHTML = purchases.map(purchase => `
+                <div class="purchase-item" data-status="${purchase.status.toLowerCase()}">
+                    <div class="purchase-icon">
+                        <i class="fas fa-${getProductIcon(purchase.product_type)}"></i>
+                    </div>
+                    <div class="purchase-details">
+                        <div class="purchase-product">${escapeHtml(purchase.product_name)}</div>
+                        <div class="purchase-meta">
+                            <span><i class="fas fa-user"></i> ${escapeHtml(purchase.farmer_name)}</span>
+                            <span><i class="fas fa-calendar"></i> ${new Date(purchase.created_at).toLocaleDateString()}</span>
+                            <span><i class="fas fa-receipt"></i> TX: ${purchase.transaction_hash || 'Pending'}</span>
+                        </div>
+                        <div class="purchase-actions">
+                            <button class="btn btn-outline btn-small view-details" data-id="${purchase.id}">
+                                <i class="fas fa-eye"></i>
+                                Details
+                            </button>
+                            ${purchase.status === 'DELIVERED' ? `
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-file-invoice"></i>
+                                    Invoice
+                                </button>
+                            ` : purchase.status === 'SHIPPED' ? `
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-truck"></i>
+                                    Track
+                                </button>
+                            ` : `
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-clock"></i>
+                                    Awaiting
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="purchase-status status-${getStatusClass(purchase.status)}">${getStatusText(purchase.status)}</div>
+                        <div class="purchase-amount">${purchase.total_price} HBAR</div>
+                        <div class="purchase-date">${getDeliveryDate(purchase)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStats(purchases) {
+            const total = purchases.length;
+            const delivered = purchases.filter(p => p.status === 'DELIVERED').length;
+            const inTransit = purchases.filter(p => p.status === 'SHIPPED').length;
+            const totalSpent = purchases.reduce((sum, p) => sum + parseFloat(p.total_price), 0);
+
+            document.getElementById('totalPurchases').textContent = total;
+            document.getElementById('deliveredCount').textContent = delivered;
+            document.getElementById('inTransitCount').textContent = inTransit;
+            document.getElementById('totalSpent').textContent = totalSpent.toFixed(2) + ' HBAR';
+        }
+
+        // Get product icon
+        function getProductIcon(productType) {
+            const icons = {
+                'wheat': 'wheat-alt',
+                'rice': 'seedling', 
+                'corn': 'corn',
+                'potatoes': 'potato'
+            };
+            const type = (productType || '').toLowerCase();
+            return icons[type] || 'seedling';
+        }
+
+        // Get status class
+        function getStatusClass(status) {
+            const classes = {
+                'DELIVERED': 'delivered',
+                'SHIPPED': 'shipped',
+                'PENDING': 'pending',
+                'CANCELLED': 'cancelled'
+            };
+            return classes[status] || 'pending';
+        }
+
+        // Get status text
+        function getStatusText(status) {
+            const texts = {
+                'DELIVERED': 'Delivered',
+                'SHIPPED': 'In Transit',
+                'PENDING': 'Processing',
+                'CANCELLED': 'Cancelled'
+            };
+            return texts[status] || status;
+        }
+
+        // Get delivery date text
+        function getDeliveryDate(purchase) {
+            if (purchase.actual_delivery) {
+                return new Date(purchase.actual_delivery).toLocaleDateString();
+            } else if (purchase.estimated_delivery) {
+                return 'Est. ' + new Date(purchase.estimated_delivery).toLocaleDateString();
+            } else {
+                return new Date(purchase.created_at).toLocaleDateString();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Filter tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    loadPurchases({ status: filter });
+                });
+            });
+
+            // Search
+            document.getElementById('purchaseSearch').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filtered = purchases.filter(purchase => 
+                    purchase.product_name.toLowerCase().includes(searchTerm) ||
+                    purchase.farmer_name.toLowerCase().includes(searchTerm) ||
+                    purchase.batch_id.toLowerCase().includes(searchTerm)
+                );
+                displayPurchases(filtered);
+            });
+
+            // View details (delegated)
+            document.getElementById('purchaseItems').addEventListener('click', function(e) {
+                if (e.target.closest('.view-details')) {
+                    const purchaseId = e.target.closest('.view-details').dataset.id;
+                    showPurchaseDetails(purchaseId);
+                }
+            });
+
+            // Modal events
+            document.getElementById('closePurchaseModal').addEventListener('click', closePurchaseModal);
+            document.querySelector('.close-modal').addEventListener('click', closePurchaseModal);
+            document.getElementById('viewOnExplorer').addEventListener('click', viewOnExplorer);
+
+            // Export history
+            document.getElementById('exportHistory').addEventListener('click', exportHistory);
+        }
+
+        // Show purchase details
+        function showPurchaseDetails(purchaseId) {
+            currentPurchase = purchases.find(p => p.id === purchaseId);
+            if (!currentPurchase) return;
+
+            // Update modal content
+            document.getElementById('modalProduct').textContent = currentPurchase.product_name;
+            document.getElementById('modalFarmer').textContent = currentPurchase.farmer_name;
+            document.getElementById('modalHarvestDate').textContent = new Date(currentPurchase.created_at).toLocaleDateString();
+            document.getElementById('modalWeight').textContent = currentPurchase.quantity_kg + ' kg';
+            document.getElementById('modalLocation').textContent = 'Warehouse Location';
+            document.getElementById('modalBatchId').textContent = currentPurchase.batch_id;
+            document.getElementById('modalAmount').textContent = currentPurchase.total_price + ' HBAR';
+            document.getElementById('modalTransactionId').textContent = currentPurchase.transaction_hash || 'Pending';
+            document.getElementById('modalPaymentDate').textContent = new Date(currentPurchase.created_at).toLocaleString();
+            document.getElementById('modalEscrowRelease').textContent = currentPurchase.status === 'DELIVERED' ? 'Released to farmer' : 'Upon delivery confirmation';
+
+            // Update delivery timeline based on status
+            updateDeliveryTimeline(currentPurchase.status);
+
+            // Show modal
+            document.getElementById('purchaseModal').style.display = 'flex';
+        }
+
+        // Update delivery timeline
+        function updateDeliveryTimeline(status) {
+            const timeline = document.getElementById('deliveryTimeline');
+            const steps = timeline.querySelectorAll('.timeline-step');
+            
+            // Reset all steps
+            steps.forEach(step => {
+                step.classList.remove('completed', 'current');
+            });
+
+            // Mark steps as completed based on status
+            if (status === 'DELIVERED') {
+                steps.forEach(step => step.classList.add('completed'));
+            } else if (status === 'SHIPPED') {
+                steps[0].classList.add('completed');
+                steps[1].classList.add('completed');
+                steps[2].classList.add('completed');
+                steps[3].classList.add('current');
+            } else if (status === 'PENDING') {
+                steps[0].classList.add('completed');
+                steps[1].classList.add('completed');
+                steps[2].classList.add('current');
+            }
+        }
+
+        // Close purchase modal
+        function closePurchaseModal() {
+            document.getElementById('purchaseModal').style.display = 'none';
+        }
+
+        // View on explorer
+        function viewOnExplorer() {
+            if (currentPurchase && currentPurchase.transaction_hash) {
+                window.open(`https://hashscan.io/testnet/transaction/${currentPurchase.transaction_hash}`, '_blank');
+            } else {
+                showError('No transaction hash available');
+            }
+        }
+
+        // Export history
+        function exportHistory() {
+            const data = JSON.stringify(purchases, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'purchase-history.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Utility functions
+        function showError(message) {
+            alert('Error: ' + message);
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('purchaseModal')) {
+                closePurchaseModal();
+            }
+        });
+
+        // Close modals with escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closePurchaseModal();
+            }
+        });
+
+        // Bottom navigation active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

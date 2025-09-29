@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AgriChain Buyer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --secondary: #FF9800;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --background: #F8F9FA;
+            --white: #FFFFFF;
+            --border: #E0E0E0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .logo-text {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .user-role {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 10px 0;
+        }
+        
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            min-width: 70px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* Settings Dashboard */
+        .dashboard {
+            padding: 30px 0;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-family: 'Open Sans', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+        
+        /* Settings Sections */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .settings-section {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .section-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        /* Profile Section */
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            .profile-content {
+                grid-template-columns: 150px 1fr;
+            }
+        }
+        
+        .avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 600;
+            margin: 0 auto 15px;
+        }
+        
+        .avatar-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .profile-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            .profile-form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Open Sans', sans-serif;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Preferences Section */
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+        
+        .preference-info {
+            flex: 1;
+        }
+        
+        .preference-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .preference-description {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Security Section */
+        .security-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .security-item:last-child {
+            border-bottom: none;
+        }
+        
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .security-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .security-details {
+            flex: 1;
+        }
+        
+        .security-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .security-description {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        /* App Section */
+        .app-info {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            .app-info {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .app-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .app-detail:last-child {
+            border-bottom: none;
+        }
+        
+        .app-label {
+            font-weight: 600;
+        }
+        
+        .app-value {
+            color: var(--text-light);
+        }
+        
+        /* Danger Zone */
+        .danger-section {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--error);
+        }
+        
+        .danger-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .danger-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .danger-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--error);
+        }
+        
+        .danger-content {
+            margin-bottom: 25px;
+        }
+        
+        .danger-warning {
+            color: var(--error);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .danger-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-danger {
+            background: var(--error);
+            color: var(--white);
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 25px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        
+        .modal-body {
+            margin-bottom: 25px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header-content {
+                padding: 10px 0;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .settings-section {
+                padding: 20px;
+            }
+            
+            .danger-actions {
+                flex-direction: column;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🌱</div>
+                    <div class="logo-text">AgriChain Buyer</div>
+                </div>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <div class="user-name">Global Foods Inc.</div>
+                        <div class="user-role">Buyer</div>
+                    </div>
+                    <div class="avatar">GF</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Settings Dashboard -->
+    <div class="container">
+        <div class="dashboard">
+            <div class="page-header">
+                <h1 class="page-title">Account Settings</h1>
+                <a href="buyer-dashboard.html" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+
+            <div class="settings-container">
+                <!-- Profile Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h2 class="section-title">Profile Information</h2>
+                    </div>
+                    
+                    <div class="profile-content">
+                        <div>
+                            <div class="avatar-large">GF</div>
+                            <div class="avatar-actions">
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-camera"></i>
+                                    Change Photo
+                                </button>
+                                <button class="btn btn-outline btn-small">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <form class="profile-form">
+                            <div class="form-group">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" id="companyName" class="form-control" value="Global Foods Inc.">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contactPerson">Contact Person</label>
+                                <input type="text" id="contactPerson" class="form-control" value="John Smith">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" class="form-control" value="john.smith@globalfoods.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" class="form-control" value="+1 (555) 123-4567">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="businessAddress">Business Address</label>
+                                <textarea id="businessAddress" class="form-control" rows="3">123 Commerce Street, Business District, New York, NY 10001</textarea>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="businessType">Business Type</label>
+                                <select id="businessType" class="form-control">
+                                    <option>Food Distributor</option>
+                                    <option>Restaurant Chain</option>
+                                    <option>Retailer</option>
+                                    <option>Processor</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+                
+                <!-- Preferences Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h2 class="section-title">App Preferences</h2>
+                    </div>
+                    
+                    <div class="preferences-list">
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <div class="preference-title">Push Notifications</div>
+                                <div class="preference-description">Receive alerts for new harvests, price changes, and order updates</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <div class="preference-title">Email Notifications</div>
+                                <div class="preference-description">Get weekly market reports and important updates via email</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <div class="preference-title">Auto GPS Capture</div>
+                                <div class="preference-description">Automatically capture GPS when placing orders</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <div class="preference-title">Dark Mode</div>
+                                <div class="preference-description">Use dark theme for the application</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <div class="preference-title">Price Alerts</div>
+                                <div class="preference-description">Notify me when crops I'm interested in drop in price</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Security Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h2 class="section-title">Security</h2>
+                    </div>
+                    
+                    <div class="security-list">
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-icon">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <div class="security-details">
+                                    <div class="security-title">Change Password</div>
+                                    <div class="security-description">Last changed 3 months ago</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline btn-small" id="changePasswordBtn">
+                                Change
+                            </button>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="security-details">
+                                    <div class="security-title">Two-Factor Authentication</div>
+                                    <div class="security-description">Add an extra layer of security to your account</div>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-icon">
+                                    <i class="fas fa-desktop"></i>
+                                </div>
+                                <div class="security-details">
+                                    <div class="security-title">Active Sessions</div>
+                                    <div class="security-description">View and manage your active login sessions</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline btn-small">
+                                Manage
+                            </button>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-icon">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <div class="security-details">
+                                    <div class="security-title">Wallet Security</div>
+                                    <div class="security-description">Backup your wallet recovery phrase</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline btn-small">
+                                Backup
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- App Info Section -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <h2 class="section-title">App Information</h2>
+                    </div>
+                    
+                    <div class="app-info">
+                        <div class="app-detail">
+                            <span class="app-label">Version</span>
+                            <span class="app-value">1.2.3</span>
+                        </div>
+                        
+                        <div class="app-detail">
+                            <span class="app-label">Last Updated</span>
+                            <span class="app-value">October 15, 2023</span>
+                        </div>
+                        
+                        <div class="app-detail">
+                            <span class="app-label">Device</span>
+                            <span class="app-value">Chrome on Windows</span>
+                        </div>
+                        
+                        <div class="app-detail">
+                            <span class="app-label">Storage Used</span>
+                            <span class="app-value">24.5 MB</span>
+                        </div>
+                        
+                        <div class="app-detail">
+                            <span class="app-label">Hedera Network</span>
+                            <span class="app-value">Testnet</span>
+                        </div>
+                        
+                        <div class="app-detail">
+                            <span class="app-label">Wallet Address</span>
+                            <span class="app-value">0.0.1234567</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="btn btn-outline btn-small">
+                            <i class="fas fa-sync-alt"></i>
+                            Check for Updates
+                        </button>
+                        <button class="btn btn-outline btn-small">
+                            <i class="fas fa-question-circle"></i>
+                            Help & Support
+                        </button>
+                        <button class="btn btn-outline btn-small">
+                            <i class="fas fa-file-alt"></i>
+                            Terms of Service
+                        </button>
+                        <button class="btn btn-outline btn-small">
+                            <i class="fas fa-lock"></i>
+                            Privacy Policy
+                        </button>
+                    </div>
+                </section>
+                
+                <!-- Danger Zone -->
+                <section class="danger-section">
+                    <div class="danger-header">
+                        <div class="danger-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h2 class="danger-title">Danger Zone</h2>
+                    </div>
+                    
+                    <div class="danger-content">
+                        <div class="danger-warning">These actions are irreversible. Please proceed with caution.</div>
+                        <p>Deleting your account will remove all your data from our servers and disconnect your wallet. This action cannot be undone.</p>
+                    </div>
+                    
+                    <div class="danger-actions">
+                        <button class="btn btn-outline">
+                            <i class="fas fa-download"></i>
+                            Export My Data
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-unlink"></i>
+                            Disconnect Wallet
+                        </button>
+                        <button class="btn btn-danger" id="deleteAccountBtn">
+                            <i class="fas fa-trash-alt"></i>
+                            Delete Account
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="buy.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Market</span>
+            </a>
+            <a href="purchase.html" class="nav-item">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Purchases</span>
+            </a>
+            <a href="escrow.html" class="nav-item">
+                <i class="fas fa-file-contract"></i>
+                <span>Escrow</span>
+            </a>
+            <a href="wallet.html" class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="settings.html" class="nav-item  active">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Change Password</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" class="form-control" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="cancelPasswordBtn">Cancel</button>
+                <button class="btn btn-primary" id="savePasswordBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Account</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently removed from our servers and your wallet will be disconnected.</p>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="confirmDelete">Type "DELETE" to confirm</label>
+                    <input type="text" id="confirmDelete" class="form-control" placeholder="DELETE">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn" disabled>Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const passwordModal = document.getElementById('passwordModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+        const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
+        const savePasswordBtn = document.getElementById('savePasswordBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const confirmDeleteInput = document.getElementById('confirmDelete');
+        const closeModals = document.querySelectorAll('.close-modal');
+        
+        // Open change password modal
+        changePasswordBtn.addEventListener('click', function() {
+            passwordModal.style.display = 'flex';
+        });
+        
+        // Open delete account modal
+        deleteAccountBtn.addEventListener('click', function() {
+            deleteModal.style.display = 'flex';
+        });
+        
+        // Close modals
+        function closeAllModals() {
+            passwordModal.style.display = 'none';
+            deleteModal.style.display = 'none';
+        }
+        
+        closeModals.forEach(btn => {
+            btn.addEventListener('click', closeAllModals);
+        });
+        
+        cancelPasswordBtn.addEventListener('click', closeAllModals);
+        cancelDeleteBtn.addEventListener('click', closeAllModals);
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === passwordModal || event.target === deleteModal) {
+                closeAllModals();
+            }
+        });
+        
+        // Enable/disable delete confirmation button
+        confirmDeleteInput.addEventListener('input', function() {
+            confirmDeleteBtn.disabled = this.value !== 'DELETE';
+        });
+        
+        // Save password
+        savePasswordBtn.addEventListener('click', function() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
+            
+            // In a real app, this would send the data to the backend
+            alert('Password changed successfully!');
+            closeAllModals();
+        });
+        
+        // Confirm account deletion
+        confirmDeleteBtn.addEventListener('click', function() {
+            // In a real app, this would send a deletion request to the backend
+            alert('Account deletion request submitted. You will receive a confirmation email.');
+            closeAllModals();
+        });
+        
+        // Toggle switches functionality
+        document.querySelectorAll('.toggle-switch input').forEach(switchInput => {
+            switchInput.addEventListener('change', function() {
+                const setting = this.parentElement.parentElement.querySelector('.preference-title').textContent;
+                console.log(`${setting} is now ${this.checked ? 'enabled' : 'disabled'}`);
+                
+                // In a real app, this would save the preference to the backend
+                if (this.checked) {
+                    // Show confirmation for important settings
+                    if (setting === 'Two-Factor Authentication') {
+                        alert('Two-factor authentication has been enabled. You will need to set it up completely.');
+                    }
+                }
+            });
+        });
+        
+        // Profile form submission
+        document.querySelector('.profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, this would send the data to the backend
+            alert('Profile updated successfully!');
+        });
+        
+        // Bottom navigation active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+        
+        // Close modals with escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAllModals();
+            }
+        });
+        
+        // Additional settings actions
+        document.querySelectorAll('.btn-outline').forEach(button => {
+            if (button.textContent.includes('Export My Data')) {
+                button.addEventListener('click', function() {
+                    alert('Your data export has been started. You will receive an email when it is ready for download.');
+                });
+            }
+            
+            if (button.textContent.includes('Disconnect Wallet')) {
+                button.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to disconnect your wallet? You will need to reconnect it to make purchases.')) {
+                        alert('Wallet disconnected successfully. You can reconnect it anytime from the wallet page.');
+                    }
+                });
+            }
+            
+            if (button.textContent.includes('Help & Support')) {
+                button.addEventListener('click', function() {
+                    alert('Redirecting to help center...');
+                    // In a real app, this would open the help center
+                });
+            }
+        });
+    </script>
+</body>
+</html>
