@@ -47,8 +47,8 @@ agri-chain/
 ### 1. Clone repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/agri-chain.git
-cd agri-chain
+git clone https://github.com/YOUR_USERNAME/agrichain.git
+cd agrichain
 ```
 
 ### 2. Install dependencies
@@ -137,6 +137,8 @@ We welcome collaborators! Current needs:
 * Data Scientist (dashboards, KPIs)
 
 ---
+**This project is still under debugging and correction. The DIRA team acknowledges that there may be errors in the files and is currently working on perfecting these project files
+  
 
 ## 📜 License
 
