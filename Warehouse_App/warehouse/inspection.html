@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.min.js"></script>
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --secondary: #FF9800;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --background: #F8F9FA;
+            --white: #FFFFFF;
+            --border: #E0E0E0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 28px;
+            color: var(--primary);
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .app-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .page {
+            display: none;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            min-height: 500px;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .qr-scanner-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+        
+        #qr-video {
+            width: 100%;
+            border-radius: 8px;
+            background: #000;
+        }
+        
+        .scan-region {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            animation: scan 2s infinite linear;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
+        
+        .delivery-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+        }
+        
+        .delivery-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .delivery-id {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .delivery-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: rgba(255, 152, 0, 0.2);
+            color: var(--warning);
+        }
+        
+        .status-completed {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--success);
+        }
+        
+        .delivery-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .detail-item {
+            font-size: 14px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        .driver-info {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .log-entry {
+            border-left: 4px solid var(--primary);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+        }
+        
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .log-timestamp {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .log-content {
+            font-size: 14px;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        .table tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* Loading and offline states */
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .offline-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff9800;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 10000;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .notification {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 10000;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .delivery-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .app-nav {
+                justify-content: center;
+            }
+            
+            .table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-warehouse"></i>
+                <h1>Warehouse Management System</h1>
+            </div>
+            <div class="user-info">
+                <div>
+                    <div>Warehouse A</div>
+                    <div style="font-size: 14px; color: var(--text-light);">Manager</div>
+                </div>
+                <div class="avatar">WM</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="app-nav">
+            <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+            <button class="nav-btn" data-page="scan-delivery">Scan Delivery</button>
+            <button class="nav-btn" data-page="deliveries">Delivery Logs</button>
+            <button class="nav-btn" data-page="inventory">Inventory</button>
+            <button class="nav-btn" data-page="reports">Reports</button>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page active">
+            <h2 class="page-title">Dashboard Overview</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-truck-loading" style="font-size: 24px; color: var(--primary);"></i>
+                    <div class="stat-value" id="pendingDeliveries">0</div>
+                    <div class="stat-label">Pending Deliveries</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-boxes" style="font-size: 24px; color: var(--success);"></i>
+                    <div class="stat-value" id="totalInventory">0</div>
+                    <div class="stat-label">Total Inventory Items</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clipboard-list" style="font-size: 24px; color: var(--warning);"></i>
+                    <div class="stat-value" id="todayDeliveries">0</div>
+                    <div class="stat-label">Today's Deliveries</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-percentage" style="font-size: 24px; color: var(--primary);"></i>
+                    <div class="stat-value" id="completionRate">0%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-clock"></i> Recent Activity</h3>
+                <div id="recentActivity">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-truck"></i> Pending Deliveries</h3>
+                <div id="pendingDeliveriesList">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scan Delivery Page -->
+        <div id="scan-delivery" class="page">
+            <h2 class="page-title">Scan Delivery QR Code</h2>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-qrcode"></i> QR Code Scanner</h3>
+                <div class="qr-scanner-container">
+                    <video id="qr-video"></video>
+                    <div class="scan-region">
+                        <div class="scan-line"></div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button id="start-scanner" class="btn btn-primary">
+                        <i class="fas fa-camera"></i> Start Scanner
+                    </button>
+                    <button id="stop-scanner" class="btn btn-outline" style="display: none;">
+                        <i class="fas fa-stop"></i> Stop Scanner
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card" id="delivery-info" style="display: none;">
+                <h3 class="card-title"><i class="fas fa-info-circle"></i> Delivery Information</h3>
+                <div id="scanned-data">
+                    <!-- Scanned data will be displayed here -->
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="confirm-delivery" class="btn btn-success">
+                        <i class="fas fa-check"></i> Confirm Delivery
+                    </button>
+                    <button id="cancel-delivery" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delivery Logs Page -->
+        <div id="deliveries" class="page">
+            <h2 class="page-title">Delivery Logs</h2>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-list"></i> All Deliveries</h3>
+                <div class="form-group">
+                    <input type="text" id="searchDeliveries" placeholder="Search deliveries...">
+                </div>
+                <div id="deliveriesList">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Page -->
+        <div id="inventory" class="page">
+            <h2 class="page-title">Inventory Management</h2>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-boxes"></i> Current Inventory</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Batch ID</th>
+                            <th>Quantity</th>
+                            <th>Received Date</th>
+                            <th>Supplier</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTable">
+                        <tr><td colspan="6" style="text-align: center;"><div class="spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div id="reports" class="page">
+            <h2 class="page-title">Reports & Analytics</h2>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-chart-bar"></i> Delivery Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="weeklyDeliveries">0</div>
+                        <div class="stat-label">This Week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthlyDeliveries">0</div>
+                        <div class="stat-label">This Month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgProcessingTime">0h</div>
+                        <div class="stat-label">Avg. Processing Time</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-file-export"></i> Export Reports</h3>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-outline" id="exportPdf">
+                        <i class="fas fa-file-pdf"></i> Export as PDF
+                    </button>
+                    <button class="btn btn-outline" id="exportExcel">
+                        <i class="fas fa-file-excel"></i> Export as Excel
+                    </button>
+                    <button class="btn btn-outline" id="printReport">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE = 'warehouse_backend.php';
+        
+        // Global variables
+        let deliveries = [];
+        let inventory = [];
+        let activityLogs = [];
+        let qrScanner = null;
+        let currentScannedData = null;
+
+        // API Service Class
+        class WarehouseAPI {
+            constructor() {
+                this.offlineMode = false;
+                this.checkConnectivity();
+            }
+
+            async checkConnectivity() {
+                try {
+                    const response = await fetch(API_BASE + '?action=health', { 
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    this.offlineMode = !response.ok;
+                } catch (error) {
+                    this.offlineMode = true;
+                    this.showOfflineIndicator();
+                }
+            }
+
+            showOfflineIndicator() {
+                if (document.getElementById('offlineIndicator')) return;
+                
+                const indicator = document.createElement('div');
+                indicator.id = 'offlineIndicator';
+                indicator.className = 'offline-indicator';
+                indicator.innerHTML = '<i class="fas fa-wifi"></i> Offline Mode - Using cached data';
+                document.body.appendChild(indicator);
+                
+                setTimeout(() => {
+                    indicator.remove();
+                }, 5000);
+            }
+
+            async request(endpoint, options = {}) {
+                const cacheKey = `cache_${endpoint}_${JSON.stringify(options.body || '')}`;
+                
+                try {
+                    // Add action parameter to URL for backend routing
+                    const url = API_BASE + '?action=' + endpoint.replace('/', '');
+                    
+                    const response = await fetch(url, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...options.headers
+                        },
+                        ...options
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const data = await response.json();
+                    
+                    // Cache successful responses for GET requests
+                    if (!options.method || options.method === 'GET') {
+                        localStorage.setItem(cacheKey, JSON.stringify({
+                            data: data,
+                            timestamp: Date.now()
+                        }));
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.warn('API request failed, checking cache:', error);
+                    
+                    // Return cached data if available (less than 10 minutes old)
+                    const cached = localStorage.getItem(cacheKey);
+                    if (cached) {
+                        const parsed = JSON.parse(cached);
+                        if (Date.now() - parsed.timestamp < 10 * 60 * 1000) {
+                            this.offlineMode = true;
+                            this.showOfflineIndicator();
+                            return parsed.data;
+                        }
+                    }
+                    
+                    throw new Error(`Request failed and no cached data available: ${error.message}`);
+                }
+            }
+
+            // Delivery methods
+            async getDeliveries(filters = {}) {
+                const params = new URLSearchParams(filters).toString();
+                return this.request('/deliveries?' + params);
+            }
+
+            async getPendingDeliveries() {
+                return this.request('/deliveries/pending');
+            }
+
+            async confirmDelivery(deliveryData) {
+                return this.request('/deliveries/confirm', {
+                    method: 'POST',
+                    body: JSON.stringify(deliveryData)
+                });
+            }
+
+            async scanDelivery(qrData) {
+                return this.request('/scan/delivery', {
+                    method: 'POST',
+                    body: JSON.stringify({ qr_data: qrData })
+                });
+            }
+
+            // Inventory methods
+            async getInventory() {
+                return this.request('/inventory');
+            }
+
+            // Activity methods
+            async getActivityLogs(limit = 20) {
+                return this.request('/activity/logs?limit=' + limit);
+            }
+
+            // Reports methods
+            async getReportsStats(period = '30d') {
+                return this.request('/reports/stats?period=' + period);
+            }
+
+            async syncOfflineActions() {
+                return this.request('/offline/sync');
+            }
+        }
+
+        // Initialize API
+        const warehouseAPI = new WarehouseAPI();
+
+        // DOM Elements
+        const elements = {
+            // Navigation
+            navBtns: document.querySelectorAll('.nav-btn'),
+            pages: document.querySelectorAll('.page'),
+            
+            // Dashboard elements
+            pendingDeliveries: document.getElementById('pendingDeliveries'),
+            totalInventory: document.getElementById('totalInventory'),
+            todayDeliveries: document.getElementById('todayDeliveries'),
+            completionRate: document.getElementById('completionRate'),
+            recentActivity: document.getElementById('recentActivity'),
+            pendingDeliveriesList: document.getElementById('pendingDeliveriesList'),
+            
+            // Scan delivery elements
+            qrVideo: document.getElementById('qr-video'),
+            startScannerBtn: document.getElementById('start-scanner'),
+            stopScannerBtn: document.getElementById('stop-scanner'),
+            deliveryInfoCard: document.getElementById('delivery-info'),
+            scannedDataEl: document.getElementById('scanned-data'),
+            confirmDeliveryBtn: document.getElementById('confirm-delivery'),
+            cancelDeliveryBtn: document.getElementById('cancel-delivery'),
+            
+            // Deliveries elements
+            deliveriesListEl: document.getElementById('deliveriesList'),
+            searchDeliveriesEl: document.getElementById('searchDeliveries'),
+            
+            // Inventory elements
+            inventoryTableEl: document.getElementById('inventoryTable'),
+            
+            // Reports elements
+            weeklyDeliveriesEl: document.getElementById('weeklyDeliveries'),
+            monthlyDeliveriesEl: document.getElementById('monthlyDeliveries'),
+            avgProcessingTimeEl: document.getElementById('avgProcessingTime'),
+            exportPdf: document.getElementById('exportPdf'),
+            exportExcel: document.getElementById('exportExcel'),
+            printReport: document.getElementById('printReport')
+        };
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            try {
+                setupNavigation();
+                await updateDashboard();
+                setupEventListeners();
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                showError('Failed to load application data.');
+            }
+        }
+
+        function setupNavigation() {
+            elements.navBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const pageId = btn.getAttribute('data-page');
+                    
+                    // Update active nav button
+                    elements.navBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Show selected page
+                    elements.pages.forEach(page => page.classList.remove('active'));
+                    document.getElementById(pageId).classList.add('active');
+                    
+                    // Load page-specific data
+                    switch (pageId) {
+                        case 'dashboard':
+                            updateDashboard();
+                            break;
+                        case 'deliveries':
+                            loadDeliveries();
+                            break;
+                        case 'inventory':
+                            loadInventory();
+                            break;
+                        case 'reports':
+                            updateReports();
+                            break;
+                        case 'scan-delivery':
+                            resetScanner();
+                            break;
+                    }
+                });
+            });
+        }
+
+        async function updateDashboard() {
+            try {
+                // Create mock data for demonstration
+                const pendingDeliveries = [
+                    { delivery_id: 'DEL-20230501-001', product_type: 'Wheat', quantity_kg: 5000, scheduled_date: new Date().toISOString(), driver_name: 'John Smith', status: 'PENDING' },
+                    { delivery_id: 'DEL-20230501-002', product_type: 'Corn', quantity_kg: 7500, scheduled_date: new Date().toISOString(), driver_name: 'Jane Doe', status: 'PENDING' },
+                    { delivery_id: 'DEL-20230501-003', product_type: 'Rice', quantity_kg: 3000, scheduled_date: new Date().toISOString(), driver_name: 'Robert Johnson', status: 'PENDING' }
+                ];
+                
+                const inventory = [
+                    { product_type: 'Wheat', batch_id: 'BATCH-001', quantity_kg: 15000, received_date: new Date().toISOString(), supplier: 'Farm Fresh Inc.', status: 'IN_STOCK' },
+                    { product_type: 'Corn', batch_id: 'BATCH-002', quantity_kg: 12000, received_date: new Date().toISOString(), supplier: 'Agri Corp', status: 'IN_STOCK' },
+                    { product_type: 'Rice', batch_id: 'BATCH-003', quantity_kg: 8000, received_date: new Date().toISOString(), supplier: 'Global Grains', status: 'IN_STOCK' }
+                ];
+                
+                const activityLogs = [
+                    { action_type: 'DELIVERY_RECEIVED', details: 'Received 5000kg of Wheat from John Smith', timestamp: new Date().toISOString() },
+                    { action_type: 'INSPECTION_COMPLETED', details: 'Inspected batch BATCH-001 - Status: APPROVED', timestamp: new Date(Date.now() - 3600000).toISOString() },
+                    { action_type: 'DELIVERY_RECEIVED', details: 'Received 7500kg of Corn from Jane Doe', timestamp: new Date(Date.now() - 7200000).toISOString() },
+                    { action_type: 'INVENTORY_UPDATE', details: 'Adjusted inventory count for Wheat', timestamp: new Date(Date.now() - 10800000).toISOString() },
+                    { action_type: 'DELIVERY_RECEIVED', details: 'Received 3000kg of Rice from Robert Johnson', timestamp: new Date(Date.now() - 14400000).toISOString() }
+                ];
+
+                // Update stats
+                elements.pendingDeliveries.textContent = pendingDeliveries.length;
+                elements.totalInventory.textContent = inventory.length;
+                
+                const today = new Date().toDateString();
+                const todayDeliveries = pendingDeliveries.filter(d => 
+                    new Date(d.scheduled_date).toDateString() === today
+                ).length;
+                elements.todayDeliveries.textContent = todayDeliveries;
+
+                const totalDeliveries = pendingDeliveries.length + todayDeliveries; // Simplified
+                const completionRate = totalDeliveries > 0 ? 
+                    Math.round((todayDeliveries / totalDeliveries) * 100) : 0;
+                elements.completionRate.textContent = completionRate + '%';
+
+                // Update recent activity
+                updateRecentActivity(activityLogs);
+                
+                // Update pending deliveries
+                updatePendingDeliveries(pendingDeliveries);
+                
+            } catch (error) {
+                console.error('Failed to update dashboard:', error);
+                showError('Failed to load dashboard data.');
+            }
+        }
+
+        function updateRecentActivity(logs) {
+            elements.recentActivity.innerHTML = '';
+            
+            if (logs.length === 0) {
+                elements.recentActivity.innerHTML = '<p>No recent activity.</p>';
+                return;
+            }
+            
+            logs.forEach(log => {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `
+                    <div class="log-header">
+                        <strong>${log.action_type}</strong>
+                        <span class="log-timestamp">${new Date(log.timestamp).toLocaleString()}</span>
+                    </div>
+                    <div class="log-content">${log.details}</div>
+                `;
+                elements.recentActivity.appendChild(logEntry);
+            });
+        }
+
+        function updatePendingDeliveries(deliveries) {
+            elements.pendingDeliveriesList.innerHTML = '';
+            
+            if (deliveries.length === 0) {
+                elements.pendingDeliveriesList.innerHTML = '<p>No pending deliveries.</p>';
+                return;
+            }
+            
+            deliveries.forEach(delivery => {
+                const card = document.createElement('div');
+                card.className = 'delivery-card';
+                card.innerHTML = `
+                    <div class="delivery-header">
+                        <div class="delivery-id">${delivery.delivery_id}</div>
+                        <div class="delivery-status status-pending">Pending</div>
+                    </div>
+                    <div class="delivery-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Product:</span> ${delivery.product_type}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Quantity:</span> ${delivery.quantity_kg} kg
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Scheduled:</span> ${new Date(delivery.scheduled_date).toLocaleDateString()}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Driver:</span> ${delivery.driver_name}
+                        </div>
+                    </div>
+                `;
+                elements.pendingDeliveriesList.appendChild(card);
+            });
+        }
+
+        // QR Scanner functionality
+        async function setupScanner() {
+            elements.startScannerBtn.addEventListener('click', startScanner);
+            elements.stopScannerBtn.addEventListener('click', stopScanner);
+            elements.confirmDeliveryBtn.addEventListener('click', confirmDelivery);
+            elements.cancelDeliveryBtn.addEventListener('click', cancelDelivery);
+        }
+
+        async function startScanner() {
+            try {
+                qrScanner = new QrScanner(
+                    elements.qrVideo,
+                    result => handleScannedCode(result),
+                    {
+                        highlightScanRegion: true,
+                        highlightCodeOutline: true,
+                    }
+                );
+                
+                await qrScanner.start();
+                elements.startScannerBtn.style.display = 'none';
+                elements.stopScannerBtn.style.display = 'inline-flex';
+            } catch (error) {
+                alert('Error starting scanner: ' + error.message);
+            }
+        }
+
+        function stopScanner() {
+            if (qrScanner) {
+                qrScanner.stop();
+                elements.startScannerBtn.style.display = 'inline-flex';
+                elements.stopScannerBtn.style.display = 'none';
+            }
+        }
+
+        function resetScanner() {
+            stopScanner();
+            elements.deliveryInfoCard.style.display = 'none';
+            currentScannedData = null;
+        }
+
+        async function handleScannedCode(result) {
+            try {
+                // For demo purposes, we'll create a mock delivery object
+                // In a real implementation, this would be parsed from the QR code
+                const deliveryData = {
+                    deliveryId: 'DEL-' + new Date().getTime(),
+                    productType: 'Wheat',
+                    quantity: 5000,
+                    driverName: 'John Smith',
+                    vehicleNumber: 'TRK-1234',
+                    transportCompany: 'Fast Transports'
+                };
+                
+                currentScannedData = deliveryData;
+                
+                // Stop scanner
+                stopScanner();
+                
+                // Display delivery information
+                elements.scannedDataEl.innerHTML = `
+                    <div class="delivery-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Delivery ID:</span> ${deliveryData.deliveryId}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Product:</span> ${deliveryData.productType}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Quantity:</span> ${deliveryData.quantity} kg
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Batch ID:</span> BATCH-${new Date().getTime()}
+                        </div>
+                    </div>
+                    <div class="driver-info">
+                        <h4>Driver Information</h4>
+                        <div class="delivery-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Name:</span> ${deliveryData.driverName}
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Vehicle:</span> ${deliveryData.vehicleNumber}
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Company:</span> ${deliveryData.transportCompany}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                elements.deliveryInfoCard.style.display = 'block';
+            } catch (error) {
+                alert('Invalid QR code or delivery not found: ' + error.message);
+                elements.startScannerBtn.style.display = 'inline-flex';
+            }
+        }
+
+        async function confirmDelivery() {
+            if (!currentScannedData) return;
+            
+            try {
+                // In a real implementation, this would send data to the backend
+                // For demo purposes, we'll simulate a successful confirmation
+                
+                // Show success notification
+                showNotification('Delivery confirmed and added to inventory!');
+                
+                // Reset scanner
+                resetScanner();
+                
+                // Update dashboard
+                updateDashboard();
+                
+                // Switch to dashboard
+                document.querySelector('.nav-btn[data-page="dashboard"]').click();
+                
+            } catch (error) {
+                alert('Failed to confirm delivery: ' + error.message);
+            }
+        }
+
+        function cancelDelivery() {
+            resetScanner();
+        }
+
+        async function loadDeliveries() {
+            try {
+                // Create mock data for demonstration
+                deliveries = [
+                    { delivery_id: 'DEL-20230501-001', product_type: 'Wheat', quantity_kg: 5000, scheduled_date: new Date().toISOString(), driver_name: 'John Smith', status: 'COMPLETED', received_at: new Date().toISOString(), batch_id: 'BATCH-001', transport_company: 'Fast Transports' },
+                    { delivery_id: 'DEL-20230501-002', product_type: 'Corn', quantity_kg: 7500, scheduled_date: new Date().toISOString(), driver_name: 'Jane Doe', status: 'COMPLETED', received_at: new Date().toISOString(), batch_id: 'BATCH-002', transport_company: 'Agri Logistics' },
+                    { delivery_id: 'DEL-20230501-003', product_type: 'Rice', quantity_kg: 3000, scheduled_date: new Date().toISOString(), driver_name: 'Robert Johnson', status: 'COMPLETED', received_at: new Date().toISOString(), batch_id: 'BATCH-003', transport_company: 'Global Transports' },
+                    { delivery_id: 'DEL-20230501-004', product_type: 'Wheat', quantity_kg: 6000, scheduled_date: new Date().toISOString(), driver_name: 'Michael Brown', status: 'PENDING', batch_id: 'BATCH-004', transport_company: 'Fast Transports' },
+                    { delivery_id: 'DEL-20230501-005', product_type: 'Corn', quantity_kg: 4500, scheduled_date: new Date().toISOString(), driver_name: 'Sarah Wilson', status: 'PENDING', batch_id: 'BATCH-005', transport_company: 'Agri Logistics' }
+                ];
+                
+                displayDeliveries(deliveries);
+            } catch (error) {
+                console.error('Failed to load deliveries:', error);
+                elements.deliveriesListEl.innerHTML = '<p>Failed to load deliveries.</p>';
+            }
+        }
+
+        function displayDeliveries(deliveries) {
+            elements.deliveriesListEl.innerHTML = '';
+            
+            if (deliveries.length === 0) {
+                elements.deliveriesListEl.innerHTML = '<p>No deliveries recorded.</p>';
+                return;
+            }
+            
+            deliveries.forEach(delivery => {
+                const card = document.createElement('div');
+                card.className = 'delivery-card';
+                card.innerHTML = `
+                    <div class="delivery-header">
+                        <div class="delivery-id">${delivery.delivery_id}</div>
+                        <div class="delivery-status status-${delivery.status.toLowerCase()}">${delivery.status}</div>
+                    </div>
+                    <div class="delivery-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Product:</span> ${delivery.product_type}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Quantity:</span> ${delivery.quantity_kg} kg
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Batch ID:</span> ${delivery.batch_id || 'N/A'}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">${delivery.status === 'COMPLETED' ? 'Received' : 'Scheduled'}:</span> 
+                            ${new Date(delivery.received_at || delivery.scheduled_date).toLocaleString()}
+                        </div>
+                    </div>
+                    <div class="driver-info">
+                        <h4>Driver Information</h4>
+                        <div class="delivery-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Name:</span> ${delivery.driver_name}
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Vehicle:</span> ${delivery.vehicle_number || 'N/A'}
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Company:</span> ${delivery.transport_company || 'N/A'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                elements.deliveriesListEl.appendChild(card);
+            });
+        }
+
+        async function loadInventory() {
+            try {
+                // Create mock data for demonstration
+                inventory = [
+                    { product_type: 'Wheat', batch_id: 'BATCH-001', quantity_kg: 15000, received_date: new Date().toISOString(), supplier: 'Farm Fresh Inc.', status: 'IN_STOCK' },
+                    { product_type: 'Corn', batch_id: 'BATCH-002', quantity_kg: 12000, received_date: new Date().toISOString(), supplier: 'Agri Corp', status: 'IN_STOCK' },
+                    { product_type: 'Rice', batch_id: 'BATCH-003', quantity_kg: 8000, received_date: new Date().toISOString(), supplier: 'Global Grains', status: 'IN_STOCK' },
+                    { product_type: 'Wheat', batch_id: 'BATCH-004', quantity_kg: 9000, received_date: new Date(Date.now() - 86400000).toISOString(), supplier: 'Farm Fresh Inc.', status: 'IN_STOCK' },
+                    { product_type: 'Corn', batch_id: 'BATCH-005', quantity_kg: 11000, received_date: new Date(Date.now() - 172800000).toISOString(), supplier: 'Agri Corp', status: 'IN_STOCK' }
+                ];
+                
+                displayInventory(inventory);
+            } catch (error) {
+                console.error('Failed to load inventory:', error);
+                elements.inventoryTableEl.innerHTML = '<tr><td colspan="6">Failed to load inventory.</td></tr>';
+            }
+        }
+
+        function displayInventory(inventory) {
+            elements.inventoryTableEl.innerHTML = '';
+            
+            if (inventory.length === 0) {
+                elements.inventoryTableEl.innerHTML = '<tr><td colspan="6">No inventory items.</td></tr>';
+                return;
+            }
+            
+            inventory.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.product_type}</td>
+                    <td>${item.batch_id}</td>
+                    <td>${item.quantity_kg} kg</td>
+                    <td>${new Date(item.received_date).toLocaleDateString()}</td>
+                    <td>${item.supplier || 'N/A'}</td>
+                    <td>${item.status}</td>
+                `;
+                elements.inventoryTableEl.appendChild(row);
+            });
+        }
+
+        async function updateReports() {
+            try {
+                // Create mock data for demonstration
+                const stats = {
+                    total_inspections: 45,
+                    approved: 38,
+                    conditional: 5,
+                    rejected: 2,
+                    approval_rate: 84.4,
+                    avg_weight_variance: 2.3
+                };
+                
+                // Simplified stats for demo
+                elements.weeklyDeliveriesEl.textContent = Math.floor(stats.total_inspections / 4);
+                elements.monthlyDeliveriesEl.textContent = stats.total_inspections;
+                elements.avgProcessingTimeEl.textContent = '2h'; // Hardcoded for demo
+                
+            } catch (error) {
+                console.error('Failed to load reports:', error);
+            }
+        }
+
+        function setupEventListeners() {
+            // Search functionality
+            if (elements.searchDeliveriesEl) {
+                elements.searchDeliveriesEl.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const filtered = deliveries.filter(delivery => 
+                        delivery.delivery_id.toLowerCase().includes(searchTerm) ||
+                        delivery.product_type.toLowerCase().includes(searchTerm) ||
+                        delivery.driver_name.toLowerCase().includes(searchTerm)
+                    );
+                    displayDeliveries(filtered);
+                });
+            }
+
+            // Export functionality
+            if (elements.exportPdf) {
+                elements.exportPdf.addEventListener('click', () => exportReport('pdf'));
+            }
+            if (elements.exportExcel) {
+                elements.exportExcel.addEventListener('click', () => exportReport('excel'));
+            }
+            if (elements.printReport) {
+                elements.printReport.addEventListener('click', () => exportReport('print'));
+            }
+
+            // Setup scanner
+            setupScanner();
+        }
+
+        function exportReport(format) {
+            const formats = {
+                'pdf': 'PDF',
+                'excel': 'Excel',
+                'print': 'Print'
+            };
+            
+            showNotification(`Exporting report as ${formats[format]}...\n\nThis would generate and download the report in a real implementation.`);
+        }
+
+        function showError(message) {
+            // Simple error display - could be enhanced with a proper notification system
+            console.error('Application error:', message);
+            showNotification(message, 'error');
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = type === 'error' ? 'offline-indicator' : 'notification';
+            notification.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check'}"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Refresh dashboard data periodically
+        setInterval(() => {
+            if (!warehouseAPI.offlineMode) {
+                updateDashboard();
+            }
+        }, 60000); // Every minute
+
+        // Sync offline actions when coming online
+        window.addEventListener('online', () => {
+            warehouseAPI.checkConnectivity();
+            warehouseAPI.syncOfflineActions().then(result => {
+                if (result && result.processed > 0) {
+                    showNotification(`Synced ${result.processed} offline actions`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
