@@ -138,7 +138,7 @@ We welcome collaborators! Current needs:
 
 ---
 **This project is still under debugging and correction. The DIRA team acknowledges that there may be errors in the files and is currently working on perfecting these project files
-  
+  These changes include but not limited to AI integration for actual automation using DIRA customized AI systems at minimal costs for easy execution of app chain sequence.
 
 ## 📜 License
 
