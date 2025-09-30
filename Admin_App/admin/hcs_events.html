@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCS Events - AgriChain Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E8B57;
+            --primary-dark: #1F6B3F;
+            --secondary: #4682B4;
+            --accent: #FFA500;
+            --light: #F5F5F5;
+            --dark: #333;
+            --gray: #777;
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            left: 0;
+        }
+
+        .sidebar.collapsed {
+            left: -250px;
+        }
+
+        .logo {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .nav-links {
+            padding: 15px 0;
+        }
+
+        .nav-links li {
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card-icon.primary {
+            background: var(--primary);
+        }
+
+        .card-icon.secondary {
+            background: var(--secondary);
+        }
+
+        .card-icon.accent {
+            background: var(--accent);
+        }
+
+        .card-icon.success {
+            background: var(--success);
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .card-title {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.processing {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        /* Buttons */
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: #3a6a94;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #e59400;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #bd2130;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        /* Forms */
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Event Details */
+        .event-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail-group {
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            margin-top: 5px;
+            word-break: break-all;
+        }
+
+        /* JSON Viewer */
+        .json-viewer {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Live Feed */
+        .live-feed {
+            background: #1a1a1a;
+            color: #00ff00;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+        }
+
+        .feed-item {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .feed-timestamp {
+            color: #66ff66;
+            font-weight: bold;
+        }
+
+        .feed-topic {
+            color: #ffcc00;
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Event Type Badges */
+        .event-type {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .type-batch {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .type-shipment {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .type-quality {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .type-escrow {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .type-system {
+            background: #e0e0e0;
+            color: #424242;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h2 {
+                font-size: 1.3rem;
+            }
+            
+            .event-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .page-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 8px 15px;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <h1><i class="fas fa-seedling"></i> <span>AgriChain Admin</span></h1>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                   <li><a href="dashboard.html" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="batch.html"><i class="fas fa-tractor"></i> <span>Batch Management</span></a></li>
+                <li><a href="shipment.html"><i class="fas fa-truck"></i> <span>Shipment Tracking</span></a></li>
+                <li><a href="quality_control.html"><i class="fas fa-clipboard-check"></i> <span>Quality Control</span></a></li>
+                <li><a href="escrow.html"><i class="fas fa-money-bill-wave"></i> <span>Escrow Management</span></a></li>
+                <li><a href="hcs_events.html" class="active"><i class="fas fa-stream"></i> <span>HCS Events</span></a></li>
+                <li><a href="metadata.html"><i class="fas fa-database"></i> <span>IPFS Metadata</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-note-sticky"></i> <span>Reports</span></a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> <span>System Settings</span></a></li>
+            </ul>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="header">
+                <h2>
+                    <button class="header-toggle" id="headerToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    HCS Events Monitor
+                </h2>
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div>
+                        <div>Admin User</div>
+                        <div style="font-size: 0.8rem; color: var(--gray);">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h3>Hedera Consensus Service Events</h3>
+                <div class="page-actions">
+                    <button class="btn-secondary" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn-accent" id="exportBtn">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- HCS Stats Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Events</h3>
+                        <div class="card-icon primary">
+                            <i class="fas fa-stream"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">1,847</div>
+                    <div class="card-title">All Time Events</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Today's Events</h3>
+                        <div class="card-icon secondary">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">142</div>
+                    <div class="card-title">Last 24 Hours</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Active Topics</h3>
+                        <div class="card-icon success">
+                            <i class="fas fa-broadcast-tower"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">8</div>
+                    <div class="card-title">Monitoring Topics</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Success Rate</h3>
+                        <div class="card-icon accent">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">99.8%</div>
+                    <div class="card-title">Event Processing</div>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="table-container">
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="searchEvents" placeholder="Search events by message ID, batch ID, or content...">
+                    </div>
+                    <div class="filter-group">
+                        <select id="eventTypeFilter">
+                            <option value="">All Event Types</option>
+                            <option value="batch">Batch Events</option>
+                            <option value="shipment">Shipment Events</option>
+                            <option value="quality">Quality Events</option>
+                            <option value="escrow">Escrow Events</option>
+                            <option value="system">System Events</option>
+                        </select>
+                        <select id="statusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="pending">Pending</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                        <input type="date" id="dateFilter">
+                        <button class="btn-secondary">
+                            <i class="fas fa-filter"></i> Apply
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" data-tab="all">All Events</div>
+                    <div class="tab" data-tab="live">Live Feed</div>
+                    <div class="tab" data-tab="topics">Topic Management</div>
+                    <div class="tab" data-tab="analytics">Analytics</div>
+                </div>
+                
+                <div class="tab-content active" id="all">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Message ID</th>
+                                <th>Timestamp</th>
+                                <th>Topic</th>
+                                <th>Event Type</th>
+                                <th>Batch ID</th>
+                                <th>Actor</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0.0.1234567:890</td>
+                                <td>2023-10-21 14:30:22</td>
+                                <td>0.0.8888888</td>
+                                <td><span class="event-type type-batch">BATCH_CREATED</span></td>
+                                <td>0.0.1234567:3</td>
+                                <td>Farmer: Riverbend</td>
+                                <td><span class="status confirmed">Confirmed</span></td>
+                                <td>
+                                    <button class="btn-secondary view-event" data-id="1">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:891</td>
+                                <td>2023-10-21 13:15:18</td>
+                                <td>0.0.8888888</td>
+                                <td><span class="event-type type-shipment">PICKED_UP</span></td>
+                                <td>0.0.1234567:2</td>
+                                <td>Transporter: T-789</td>
+                                <td><span class="status confirmed">Confirmed</span></td>
+                                <td>
+                                    <button class="btn-secondary view-event" data-id="2">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:892</td>
+                                <td>2023-10-21 12:45:33</td>
+                                <td>0.0.8888888</td>
+                                <td><span class="event-type type-quality">QUALITY_CHECK</span></td>
+                                <td>0.0.1234567:5</td>
+                                <td>Inspector: #45</td>
+                                <td><span class="status confirmed">Confirmed</span></td>
+                                <td>
+                                    <button class="btn-secondary view-event" data-id="3">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:893</td>
+                                <td>2023-10-21 11:20:47</td>
+                                <td>0.0.8888888</td>
+                                <td><span class="event-type type-escrow">ESCROW_CREATED</span></td>
+                                <td>0.0.1234567:7</td>
+                                <td>Buyer: Local Markets</td>
+                                <td><span class="status confirmed">Confirmed</span></td>
+                                <td>
+                                    <button class="btn-secondary view-event" data-id="4">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:894</td>
+                                <td>2023-10-21 10:05:12</td>
+                                <td>0.0.8888888</td>
+                                <td><span class="event-type type-system">SYSTEM_HEALTH</span></td>
+                                <td>-</td>
+                                <td>System: Monitor</td>
+                                <td><span class="status confirmed">Confirmed</span></td>
+                                <td>
+                                    <button class="btn-secondary view-event" data-id="5">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content" id="live">
+                    <h4>Live Event Feed</h4>
+                    <div class="live-feed" id="liveFeed">
+                        <div class="feed-item">
+                            <span class="feed-timestamp">[14:45:33]</span> 
+                            <span class="feed-topic">[TOPIC: 0.0.8888888]</span> 
+                            MESSAGE: BATCH_CREATED - Batch: 0.0.1234567:9 - Farmer: Green Valley
+                        </div>
+                        <div class="feed-item">
+                            <span class="feed-timestamp">[14:42:18]</span> 
+                            <span class="feed-topic">[TOPIC: 0.0.8888888]</span> 
+                            MESSAGE: LOCATION_UPDATE - Batch: 0.0.1234567:2 - Location: Highway 5, MP 145
+                        </div>
+                        <div class="feed-item">
+                            <span class="feed-timestamp">[14:40:05]</span> 
+                            <span class="feed-topic">[TOPIC: 0.0.8888888]</span> 
+                            MESSAGE: TEMPERATURE_READING - Batch: 0.0.1234567:3 - Temp: 3.2°C
+                        </div>
+                        <div class="feed-item">
+                            <span class="feed-timestamp">[14:38:51]</span> 
+                            <span class="feed-topic">[TOPIC: 0.0.8888888]</span> 
+                            MESSAGE: QUALITY_APPROVED - Batch: 0.0.1234567:5 - Score: 94%
+                        </div>
+                        <div class="feed-item">
+                            <span class="feed-timestamp">[14:35:27]</span> 
+                            <span class="feed-topic">[TOPIC: 0.0.8888888]</span> 
+                            MESSAGE: ESCROW_UPDATED - Escrow: ESC-789124 - Status: ACTIVE
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn-success" id="startLiveFeed">
+                            <i class="fas fa-play"></i> Start Live Feed
+                        </button>
+                        <button class="btn-danger" id="stopLiveFeed" disabled>
+                            <i class="fas fa-stop"></i> Stop Live Feed
+                        </button>
+                        <button class="btn-secondary" id="clearFeed">
+                            <i class="fas fa-trash"></i> Clear Feed
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="topics">
+                    <h4>Topic Management</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Topic ID</th>
+                                <th>Topic Name</th>
+                                <th>Messages</th>
+                                <th>Last Message</th>
+                                <th>Status</th>
+                                <th>Access Control</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0.0.8888888</td>
+                                <td>Supply Chain Main</td>
+                                <td>1,847</td>
+                                <td>2023-10-21 14:45:33</td>
+                                <td><span class="status confirmed">Active</span></td>
+                                <td>Public Read</td>
+                                <td>
+                                    <button class="btn-secondary">Manage</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.8888889</td>
+                                <td>Quality Control</td>
+                                <td>542</td>
+                                <td>2023-10-21 14:38:51</td>
+                                <td><span class="status confirmed">Active</span></td>
+                                <td>Restricted</td>
+                                <td>
+                                    <button class="btn-secondary">Manage</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.8888890</td>
+                                <td>Escrow Transactions</td>
+                                <td>318</td>
+                                <td>2023-10-21 14:35:27</td>
+                                <td><span class="status confirmed">Active</span></td>
+                                <td>Restricted</td>
+                                <td>
+                                    <button class="btn-secondary">Manage</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="btn-accent">
+                            <i class="fas fa-plus"></i> Create New Topic
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="fas fa-cog"></i> Topic Settings
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="analytics">
+                    <h4>Event Analytics</h4>
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Event Types Distribution</h3>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Batch Events</span>
+                                    <span>45% (831)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Shipment Events</span>
+                                    <span>28% (517)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Quality Events</span>
+                                    <span>15% (277)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Escrow Events</span>
+                                    <span>9% (166)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>System Events</span>
+                                    <span>3% (56)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Performance Metrics</h3>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Avg. Processing Time</span>
+                                    <span>2.3s</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Success Rate</span>
+                                    <span>99.8%</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Peak Events/Hour</span>
+                                    <span>347</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Uptime</span>
+                                    <span>99.95%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Details View -->
+            <div class="table-container" id="eventDetails" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Event Details</h3>
+                    <button class="btn-secondary" id="backToList">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </button>
+                </div>
+                
+                <div class="event-details">
+                    <div>
+                        <div class="detail-group">
+                            <div class="detail-label">Message ID</div>
+                            <div class="detail-value">0.0.1234567:890</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Topic ID</div>
+                            <div class="detail-value">0.0.8888888</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Event Type</div>
+                            <div class="detail-value"><span class="event-type type-batch">BATCH_CREATED</span></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Timestamp</div>
+                            <div class="detail-value">2023-10-21 14:30:22.123456789</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Sequence Number</div>
+                            <div class="detail-value">1,847</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-group">
+                            <div class="detail-label">Batch ID</div>
+                            <div class="detail-value">0.0.1234567:3</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Actor</div>
+                            <div class="detail-value">Farmer: Riverbend Produce</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">IPFS Hash</div>
+                            <div class="detail-value">QmJkl...789Mno</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Running Hash</div>
+                            <div class="detail-value">0a1b2c3d4e5f6789...</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value"><span class="status confirmed">Confirmed</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Message Content (JSON)</label>
+                    <div class="json-viewer">
+{
+  "event": "BATCH_CREATED",
+  "actor": "farmer_riverbend",
+  "timestamp": "2023-10-21T14:30:22Z",
+  "batch_id": "0.0.1234567:3",
+  "product": "Mixed Berries",
+  "quantity": 75,
+  "harvest_date": "2023-10-18",
+  "ipfs_hash": "QmJkl...789Mno",
+  "metadata": {
+    "certifications": ["Organic", "Non-GMO"],
+    "origin": "California",
+    "farm_id": "RVBP-001"
+  }
+}
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn-secondary">
+                        <i class="fas fa-external-link-alt"></i> View on HashScan
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="fas fa-download"></i> Download Raw Message
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="fas fa-code"></i> Verify Signature
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu toggle functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const headerToggle = document.getElementById('headerToggle');
+        const menuToggle = document.getElementById('menuToggle');
+
+        // Toggle sidebar from header button
+        headerToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar from menu toggle button
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+        });
+
+        // Close sidebar when clicking on a link (for mobile)
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // View event buttons
+        const eventDetails = document.getElementById('eventDetails');
+        const backToList = document.getElementById('backToList');
+
+        document.querySelectorAll('.view-event').forEach(button => {
+            button.addEventListener('click', function() {
+                // Hide the events table and show details
+                document.querySelector('.table-container').style.display = 'none';
+                eventDetails.style.display = 'block';
+            });
+        });
+
+        backToList.addEventListener('click', function() {
+            eventDetails.style.display = 'none';
+            document.querySelector('.table-container').style.display = 'block';
+        });
+
+        // Live feed functionality
+        const liveFeed = document.getElementById('liveFeed');
+        const startLiveFeedBtn = document.getElementById('startLiveFeed');
+        const stopLiveFeedBtn = document.getElementById('stopLiveFeed');
+        const clearFeedBtn = document.getElementById('clearFeed');
+        let liveFeedInterval;
+
+        startLiveFeedBtn.addEventListener('click', function() {
+            this.disabled = true;
+            stopLiveFeedBtn.disabled = false;
+            
+            // Simulate live events
+            liveFeedInterval = setInterval(() => {
+                const events = [
+                    'TEMPERATURE_UPDATE - Batch: 0.0.1234567:2 - Temp: 4.1°C',
+                    'LOCATION_UPDATE - Batch: 0.0.1234567:3 - Location: Warehouse A',
+                    'SYSTEM_CHECK - All systems operational',
+                    'QUALITY_INSPECTION_START - Batch: 0.0.1234567:7 - Inspector: #23'
+                ];
+                
+                const randomEvent = events[Math.floor(Math.random() * events.length)];
+                const timestamp = new Date().toLocaleTimeString();
+                
+                const feedItem = document.createElement('div');
+                feedItem.className = 'feed-item';
+                feedItem.innerHTML = `
+                    <span class="feed-timestamp">[${timestamp}]</span> 
+                    <span class="feed-topic">[TOPIC: 0.0.8888888]</span> 
+                    MESSAGE: ${randomEvent}
+                `;
+                
+                liveFeed.prepend(feedItem);
+                
+                // Keep only last 20 items
+                if (liveFeed.children.length > 20) {
+                    liveFeed.removeChild(liveFeed.lastChild);
+                }
+            }, 3000);
+        });
+
+        stopLiveFeedBtn.addEventListener('click', function() {
+            this.disabled = true;
+            startLiveFeedBtn.disabled = false;
+            clearInterval(liveFeedInterval);
+        });
+
+        clearFeedBtn.addEventListener('click', function() {
+            liveFeed.innerHTML = '';
+        });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                // In real app, would fetch latest events
+                alert('Events data refreshed!');
+            }, 1500);
+        });
+
+        // Export button
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-download"></i> Export';
+                alert('Events exported to CSV successfully!');
+            }, 2000);
+        });
+
+        // Search functionality
+        document.getElementById('searchEvents').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            // In real app, would filter the events table
+            console.log('Searching for:', searchTerm);
+        });
+
+        // Simulate real-time updates for stats
+        setInterval(() => {
+            // Update today's events count
+            const todayEventsElement = document.querySelector('.card:nth-child(2) .card-value');
+            let current = parseInt(todayEventsElement.textContent);
+            todayEventsElement.textContent = current + 1;
+
+            // Update total events count
+            const totalEventsElement = document.querySelector('.card:nth-child(1) .card-value');
+            let total = parseInt(totalEventsElement.textContent.replace(',', ''));
+            totalEventsElement.textContent = (total + 1).toLocaleString();
+        }, 10000);
+    </script>
+</body>
+</html>

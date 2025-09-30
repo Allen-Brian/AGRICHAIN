@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Management - AgriChain Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="batch.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <h1><i class="fas fa-seedling"></i> <span>AgriChain Admin</span></h1>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="batch.html" class="active"><i class="fas fa-tractor"></i> <span>Batch Management</span></a></li>
+                <li><a href="shipment.html"><i class="fas fa-truck"></i> <span>Shipment Tracking</span></a></li>
+                <li><a href="quality_control.html"><i class="fas fa-clipboard-check"></i> <span>Quality Control</span></a></li>
+                <li><a href="escrow.html"><i class="fas fa-money-bill-wave"></i> <span>Escrow Management</span></a></li>
+                <li><a href="hcs_events.html"><i class="fas fa-stream"></i> <span>HCS Events</span></a></li>
+                <li><a href="metadata.html"><i class="fas fa-database"></i> <span>IPFS Metadata</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-note-sticky"></i> <span>Reports</span></a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> <span>System Settings</span></a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="header">
+                <h2>
+                    <button class="header-toggle" id="headerToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    Batch Management
+                </h2>
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div>
+                        <div>Admin User</div>
+                        <div style="font-size: 0.8rem; color: var(--gray);">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h3>NFT Batch Overview</h3>
+                <div class="page-actions">
+                    <button class="btn-secondary" id="filterBtn">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <button class="btn-accent" id="createBatchBtn">
+                        <i class="fas fa-plus"></i> Create Batch
+                    </button>
+                </div>
+            </div>
+
+            <!-- Batch Stats Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Batches</h3>
+                        <div class="card-icon primary">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">142</div>
+                    <div class="card-title">NFT Batches Created</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Active Batches</h3>
+                        <div class="card-icon secondary">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">23</div>
+                    <div class="card-title">In Supply Chain</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Completed</h3>
+                        <div class="card-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">98</div>
+                    <div class="card-title">Delivered & Paid</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Issues</h3>
+                        <div class="card-icon accent">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">7</div>
+                    <div class="card-title">Requiring Attention</div>
+                </div>
+            </div>
+
+            <!-- Batch List Table -->
+            <div class="table-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="all">All Batches</div>
+                    <div class="tab" data-tab="active">Active</div>
+                    <div class="tab" data-tab="completed">Completed</div>
+                    <div class="tab" data-tab="issues">Issues</div>
+                </div>
+                
+                <div class="tab-content active" id="all">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Token ID</th>
+                                <th>Farmer</th>
+                                <th>Product</th>
+                                <th>Creation Date</th>
+                                <th>IPFS Hash</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0.0.1234567:1</td>
+                                <td>Green Valley Farms</td>
+                                <td>Organic Tomatoes</td>
+                                <td>2023-10-15</td>
+                                <td>QmXyz...Abc123</td>
+                                <td><span class="status completed">Delivered</span></td>
+                                <td>
+                                    <button class="btn-secondary view-batch" data-id="1">View</button>
+                                    <button class="btn-accent">QR</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:2</td>
+                                <td>Sunrise Organics</td>
+                                <td>Romaine Lettuce</td>
+                                <td>2023-10-18</td>
+                                <td>QmDef...456Ghi</td>
+                                <td><span class="status in-progress">In Transit</span></td>
+                                <td>
+                                    <button class="btn-secondary view-batch" data-id="2">View</button>
+                                    <button class="btn-accent">QR</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:3</td>
+                                <td>Riverbend Produce</td>
+                                <td>Mixed Berries</td>
+                                <td>2023-10-20</td>
+                                <td>QmJkl...789Mno</td>
+                                <td><span class="status pending">Quality Check</span></td>
+                                <td>
+                                    <button class="btn-secondary view-batch" data-id="3">View</button>
+                                    <button class="btn-accent">QR</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:4</td>
+                                <td>Mountain Harvest</td>
+                                <td>Organic Apples</td>
+                                <td>2023-10-22</td>
+                                <td>QmPqr...012Stu</td>
+                                <td><span class="status alert">Escrow Hold</span></td>
+                                <td>
+                                    <button class="btn-secondary view-batch" data-id="4">View</button>
+                                    <button class="btn-accent">QR</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:5</td>
+                                <td>Green Valley Farms</td>
+                                <td>Organic Carrots</td>
+                                <td>2023-10-25</td>
+                                <td>QmVwx...345Yza</td>
+                                <td><span class="status in-progress">Warehouse</span></td>
+                                <td>
+                                    <button class="btn-secondary view-batch" data-id="5">View</button>
+                                    <button class="btn-accent">QR</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content" id="active">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Token ID</th>
+                                <th>Farmer</th>
+                                <th>Product</th>
+                                <th>Creation Date</th>
+                                <th>IPFS Hash</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0.0.1234567:2</td>
+                                <td>Sunrise Organics</td>
+                                <td>Romaine Lettuce</td>
+                                <td>2023-10-18</td>
+                                <td>QmDef...456Ghi</td>
+                                <td><span class="status in-progress">In Transit</span></td>
+                                <td>
+                                    <button class="btn-secondary view-batch" data-id="2">View</button>
+                                    <button class="btn-accent">QR</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.0.1234567:5</td>
+                                <td>Green Valley Farms</td>
+                                <td>Organic Carrots</td>
+                                <td>2023-10-25</td>
+                                <td>QmVwx...345Yza</td>
+                                <td><span class="status in-progress">Warehouse</span></td>
+                                <td>
+                                    <button class="btn-secondary view-batch" data-id="5">View</button>
+                                    <button class="btn-accent">QR</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Create Batch Form -->
+            <div class="form-container">
+                <h3>Create New NFT Batch</h3>
+                <form id="batchForm">
+                    <div class="form-group">
+                        <label for="farmer">Farmer</label>
+                        <select id="farmer" required>
+                            <option value="">Select Farmer</option>
+                            <option value="farm1">Green Valley Farms</option>
+                            <option value="farm2">Sunrise Organics</option>
+                            <option value="farm3">Riverbend Produce</option>
+                            <option value="farm4">Mountain Harvest</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="product">Product Type</label>
+                        <select id="product" required>
+                            <option value="">Select Product</option>
+                            <option value="tomato">Organic Tomatoes</option>
+                            <option value="lettuce">Romaine Lettuce</option>
+                            <option value="berries">Mixed Berries</option>
+                            <option value="apples">Organic Apples</option>
+                            <option value="carrots">Organic Carrots</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="harvestDate">Harvest Date</label>
+                        <input type="date" id="harvestDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity (kg)</label>
+                        <input type="number" id="quantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="metadata">Product Metadata (JSON)</label>
+                        <textarea id="metadata" rows="5" placeholder='{"harvest_date": "2023-10-25", "origin": "California", "certifications": ["Organic", "Non-GMO"]}' required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Product Image</label>
+                        <input type="file" id="image" accept="image/*">
+                    </div>
+                    <button type="submit">Create Batch & Mint NFT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch Details Modal -->
+    <div class="modal" id="batchModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Batch Details</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="batch-details">
+                <div>
+                    <div class="detail-group">
+                        <div class="detail-label">Token ID</div>
+                        <div class="detail-value" id="modalTokenId">0.0.1234567:1</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Farmer</div>
+                        <div class="detail-value" id="modalFarmer">Green Valley Farms</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Product</div>
+                        <div class="detail-value" id="modalProduct">Organic Tomatoes</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Harvest Date</div>
+                        <div class="detail-value" id="modalHarvestDate">2023-10-10</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Quantity</div>
+                        <div class="detail-value" id="modalQuantity">150 kg</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="detail-group">
+                        <div class="detail-label">Creation Date</div>
+                        <div class="detail-value" id="modalCreationDate">2023-10-15</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">IPFS Hash</div>
+                        <div class="detail-value" id="modalIpfsHash">QmXyz...Abc123</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Current Status</div>
+                        <div class="detail-value" id="modalStatus"><span class="status completed">Delivered</span></div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Current Actor</div>
+                        <div class="detail-value" id="modalActor">Buyer: Fresh Market Co.</div>
+                    </div>
+                    <div class="detail-group">
+                        <div class="detail-label">Escrow Status</div>
+                        <div class="detail-value" id="modalEscrow">Released - $1,250.00</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn-accent">View Full Timeline</button>
+                <button class="btn-secondary">View IPFS Metadata</button>
+                <button class="btn-danger">Flag Issue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu toggle functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const headerToggle = document.getElementById('headerToggle');
+        const menuToggle = document.getElementById('menuToggle');
+
+        // Toggle sidebar from header button
+        headerToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar from menu toggle button
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+        });
+
+        // Close sidebar when clicking on a link (for mobile)
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Batch form submission
+        document.getElementById('batchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulate API call to create batch
+            const farmer = document.getElementById('farmer').value;
+            const product = document.getElementById('product').value;
+            
+            if (farmer && product) {
+                alert(`Batch creation initiated for ${product} from ${farmer}. NFT minting in progress...`);
+                // In a real app, this would call your backend API
+                this.reset();
+            } else {
+                alert('Please fill in all required fields');
+            }
+        });
+
+        // Modal functionality
+        const batchModal = document.getElementById('batchModal');
+        const closeModal = document.getElementById('closeModal');
+        const viewBatchButtons = document.querySelectorAll('.view-batch');
+
+        // Sample batch data
+        const batchData = {
+            1: {
+                tokenId: '0.0.1234567:1',
+                farmer: 'Green Valley Farms',
+                product: 'Organic Tomatoes',
+                harvestDate: '2023-10-10',
+                quantity: '150 kg',
+                creationDate: '2023-10-15',
+                ipfsHash: 'QmXyz...Abc123',
+                status: 'completed',
+                statusText: 'Delivered',
+                actor: 'Buyer: Fresh Market Co.',
+                escrow: 'Released - $1,250.00'
+            },
+            2: {
+                tokenId: '0.0.1234567:2',
+                farmer: 'Sunrise Organics',
+                product: 'Romaine Lettuce',
+                harvestDate: '2023-10-15',
+                quantity: '200 kg',
+                creationDate: '2023-10-18',
+                ipfsHash: 'QmDef...456Ghi',
+                status: 'in-progress',
+                statusText: 'In Transit',
+                actor: 'Transporter: T-789',
+                escrow: 'In Escrow - $2,800.00'
+            },
+            3: {
+                tokenId: '0.0.1234567:3',
+                farmer: 'Riverbend Produce',
+                product: 'Mixed Berries',
+                harvestDate: '2023-10-18',
+                quantity: '75 kg',
+                creationDate: '2023-10-20',
+                ipfsHash: 'QmJkl...789Mno',
+                status: 'pending',
+                statusText: 'Quality Check',
+                actor: 'Warehouse: Central Storage',
+                escrow: 'Pending - $1,150.00'
+            }
+        };
+
+        // Open modal with batch details
+        viewBatchButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const batchId = button.getAttribute('data-id');
+                const batch = batchData[batchId];
+                
+                if (batch) {
+                    document.getElementById('modalTokenId').textContent = batch.tokenId;
+                    document.getElementById('modalFarmer').textContent = batch.farmer;
+                    document.getElementById('modalProduct').textContent = batch.product;
+                    document.getElementById('modalHarvestDate').textContent = batch.harvestDate;
+                    document.getElementById('modalQuantity').textContent = batch.quantity;
+                    document.getElementById('modalCreationDate').textContent = batch.creationDate;
+                    document.getElementById('modalIpfsHash').textContent = batch.ipfsHash;
+                    document.getElementById('modalStatus').innerHTML = `<span class="status ${batch.status}">${batch.statusText}</span>`;
+                    document.getElementById('modalActor').textContent = batch.actor;
+                    document.getElementById('modalEscrow').textContent = batch.escrow;
+                    
+                    batchModal.style.display = 'flex';
+                }
+            });
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            batchModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === batchModal) {
+                batchModal.style.display = 'none';
+            }
+        });
+
+        // Create batch button
+        document.getElementById('createBatchBtn').addEventListener('click', () => {
+            document.getElementById('batchForm').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

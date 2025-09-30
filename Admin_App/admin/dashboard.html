@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AgriChain Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <h1><i class="fas fa-seedling"></i> <span>AgriChain Admin</span></h1>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="batch.html"><i class="fas fa-tractor"></i> <span>Batch Management</span></a></li>
+                <li><a href="shipment.html"><i class="fas fa-truck"></i> <span>Shipment Tracking</span></a></li>
+                <li><a href="quality_control.html"><i class="fas fa-clipboard-check"></i> <span>Quality Control</span></a></li>
+                <li><a href="escrow.html"><i class="fas fa-money-bill-wave"></i> <span>Escrow Management</span></a></li>
+                <li><a href="hcs_events.html"><i class="fas fa-stream"></i> <span>HCS Events</span></a></li>
+                <li><a href="metadata.html"><i class="fas fa-database"></i> <span>IPFS Metadata</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-note-sticky"></i> <span>Reports</span></a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> <span>System Settings</span></a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="header">
+                <h2>
+                    <button class="header-toggle" id="headerToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    Supply Chain Dashboard
+                </h2>
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div>
+                        <div>Admin User</div>
+                        <div style="font-size: 0.8rem; color: var(--gray);">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Batches</h3>
+                        <div class="card-icon primary">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">142</div>
+                    <div class="card-title">NFT Batches Created</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Active Shipments</h3>
+                        <div class="card-icon secondary">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">23</div>
+                    <div class="card-title">In Transit</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Escrow Value</h3>
+                        <div class="card-icon accent">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">$42,580</div>
+                    <div class="card-title">In Escrow Accounts</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>HCS Events</h3>
+                        <div class="card-icon success">
+                            <i class="fas fa-stream"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">1,847</div>
+                    <div class="card-title">Messages Processed</div>
+                </div>
+            </div>
+
+            <!-- Recent Batches Table -->
+            <div class="table-container">
+                <h3>Recent NFT Batches</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Token ID</th>
+                            <th>Farmer</th>
+                            <th>Creation Date</th>
+                            <th>IPFS Hash</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0.0.1234567:1</td>
+                            <td>Green Valley Farms</td>
+                            <td>2023-10-15</td>
+                            <td>QmXyz...Abc123</td>
+                            <td><span class="status completed">Delivered</span></td>
+                            <td><button class="btn-secondary">View</button></td>
+                        </tr>
+                        <tr>
+                            <td>0.0.1234567:2</td>
+                            <td>Sunrise Organics</td>
+                            <td>2023-10-18</td>
+                            <td>QmDef...456Ghi</td>
+                            <td><span class="status in-progress">In Transit</span></td>
+                            <td><button class="btn-secondary">Track</button></td>
+                        </tr>
+                        <tr>
+                            <td>0.0.1234567:3</td>
+                            <td>Riverbend Produce</td>
+                            <td>2023-10-20</td>
+                            <td>QmJkl...789Mno</td>
+                            <td><span class="status pending">Quality Check</span></td>
+                            <td><button class="btn-secondary">Inspect</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                        <i class="fas fa-bolt" style="color: var(--accent); font-size: 1.5rem;"></i>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <button class="btn-accent" style="text-align: left;">
+                            <i class="fas fa-plus"></i> Create New Batch
+                        </button>
+                        <button class="btn-secondary" style="text-align: left;">
+                            <i class="fas fa-search"></i> Track Shipment
+                        </button>
+                        <button style="text-align: left;">
+                            <i class="fas fa-file-invoice-dollar"></i> View Escrow Reports
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>System Status</h3>
+                        <i class="fas fa-server" style="color: var(--secondary); font-size: 1.5rem;"></i>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Hedera Network</span>
+                            <span style="color: var(--success); font-weight: bold;">Online</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>IPFS Gateway</span>
+                            <span style="color: var(--success); font-weight: bold;">Online</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Database</span>
+                            <span style="color: var(--success); font-weight: bold;">Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="table-container">
+                <h3>Recent Activity</h3>
+                <div class="timeline">
+                    <div class="timeline-item completed">
+                        <div class="timeline-content">
+                            <h4>Batch Created</h4>
+                            <p>New NFT batch created by Green Valley Farms</p>
+                            <small>10 minutes ago</small>
+                        </div>
+                    </div>
+                    <div class="timeline-item completed">
+                        <div class="timeline-content">
+                            <h4>Shipment Picked Up</h4>
+                            <p>Transporter T-789 picked up batch 0.0.1234567:2</p>
+                            <small>2 hours ago</small>
+                        </div>
+                    </div>
+                    <div class="timeline-item current">
+                        <div class="timeline-content">
+                            <h4>Quality Inspection</h4>
+                            <p>Batch 0.0.1234567:3 awaiting quality inspection</p>
+                            <small>5 hours ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu toggle functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const headerToggle = document.getElementById('headerToggle');
+        const menuToggle = document.getElementById('menuToggle');
+
+        // Toggle sidebar from header button
+        headerToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar from menu toggle button
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+        });
+
+        // Close sidebar when clicking on a link (for mobile)
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+            });
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update active shipments count with random variation
+            const activeShipmentsElement = document.querySelector('.card:nth-child(2) .card-value');
+            let current = parseInt(activeShipmentsElement.textContent);
+            
+            // Randomly increment or decrement by 1 occasionally
+            if (Math.random() > 0.8) {
+                current = Math.max(0, current + (Math.random() > 0.5 ? 1 : -1));
+                activeShipmentsElement.textContent = current;
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Complaints - AgriChain Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E8B57;
+            --primary-dark: #1F6B3F;
+            --secondary: #4682B4;
+            --accent: #FFA500;
+            --light: #F5F5F5;
+            --dark: #333;
+            --gray: #777;
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+            color: white;
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            left: 0;
+        }
+
+        .sidebar.collapsed {
+            left: -250px;
+        }
+
+        .logo {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .nav-links {
+            padding: 15px 0;
+        }
+
+        .nav-links li {
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card-icon.primary {
+            background: var(--primary);
+        }
+
+        .card-icon.secondary {
+            background: var(--secondary);
+        }
+
+        .card-icon.accent {
+            background: var(--accent);
+        }
+
+        .card-icon.danger {
+            background: var(--danger);
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .card-title {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status.new {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        .status.in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.resolved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.escalated {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .priority {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .priority.high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .priority.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .priority.low {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* Buttons */
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: #3a6a94;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #e59400;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #bd2130;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        /* Forms */
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Complaint Cards */
+        .complaint-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .complaint-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent);
+        }
+
+        .complaint-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .complaint-type {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .type-quality {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .type-shipment {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .type-product {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .type-payment {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .type-other {
+            background: #e0e0e0;
+            color: #424242;
+        }
+
+        /* Complaint Details */
+        .complaint-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail-group {
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            margin-top: 5px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Response Form */
+        .response-form {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h2 {
+                font-size: 1.3rem;
+            }
+            
+            .complaint-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .page-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 8px 15px;
+            }
+            
+            .complaint-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <h1><i class="fas fa-seedling"></i> <span>AgriChain Admin</span></h1>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <ul class="nav-links">
+                  <li><a href="dashboard.html" ><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                <li><a href="batch.html"><i class="fas fa-tractor"></i> <span>Batch Management</span></a></li>
+                <li><a href="shipment.html"><i class="fas fa-truck"></i> <span>Shipment Tracking</span></a></li>
+                <li><a href="quality_control.html"><i class="fas fa-clipboard-check"></i> <span>Quality Control</span></a></li>
+                <li><a href="escrow.html"><i class="fas fa-money-bill-wave"></i> <span>Escrow Management</span></a></li>
+                <li><a href="hcs_events.html"><i class="fas fa-stream"></i> <span>HCS Events</span></a></li>
+                <li><a href="metadata.html"><i class="fas fa-database"></i> <span>IPFS Metadata</span></a></li>
+                <li><a href="reports.html" class="active"><i class="fa-solid fa-note-sticky"></i> <span>Reports</span></a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> <span>System Settings</span></a></li>
+            </ul>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="header">
+                <h2>
+                    <button class="header-toggle" id="headerToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    Reports & Complaints
+                </h2>
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div>
+                        <div>Admin User</div>
+                        <div style="font-size: 0.8rem; color: var(--gray);">Support Manager</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h3>User Complaints Management</h3>
+                <div class="page-actions">
+                    <button class="btn-secondary" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn-accent" id="newComplaintBtn">
+                        <i class="fas fa-plus"></i> New Complaint
+                    </button>
+                </div>
+            </div>
+
+            <!-- Complaint Stats Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Complaints</h3>
+                        <div class="card-icon primary">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">47</div>
+                    <div class="card-title">This Month</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Pending</h3>
+                        <div class="card-icon accent">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">12</div>
+                    <div class="card-title">Awaiting Response</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Resolved</h3>
+                        <div class="card-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">28</div>
+                    <div class="card-title">This Month</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Avg. Response Time</h3>
+                        <div class="card-icon secondary">
+                            <i class="fas fa-stopwatch"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">4.2h</div>
+                    <div class="card-title">Response Efficiency</div>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="table-container">
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" id="searchComplaints" placeholder="Search complaints by ID, user, or batch...">
+                    </div>
+                    <div class="filter-group">
+                        <select id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="new">New</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="escalated">Escalated</option>
+                        </select>
+                        <select id="priorityFilter">
+                            <option value="">All Priority</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                        <select id="typeFilter">
+                            <option value="">All Types</option>
+                            <option value="quality">Quality</option>
+                            <option value="shipment">Shipment</option>
+                            <option value="product">Product</option>
+                            <option value="payment">Payment</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <button class="btn-secondary">
+                            <i class="fas fa-filter"></i> Apply
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" data-tab="all">All Complaints</div>
+                    <div class="tab" data-tab="pending">Pending Response</div>
+                    <div class="tab" data-tab="resolved">Resolved</div>
+                    <div class="tab" data-tab="analytics">Complaint Analytics</div>
+                </div>
+                
+                <div class="tab-content active" id="all">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Complaint ID</th>
+                                <th>User</th>
+                                <th>Batch ID</th>
+                                <th>Type</th>
+                                <th>Priority</th>
+                                <th>Submitted</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>COMP-2023-0012</td>
+                                <td>Fresh Market Co.</td>
+                                <td>0.0.1234567:3</td>
+                                <td><span class="complaint-type type-quality">Quality</span></td>
+                                <td><span class="priority high">High</span></td>
+                                <td>2023-10-21 14:30</td>
+                                <td><span class="status new">New</span></td>
+                                <td>
+                                    <button class="btn-secondary view-complaint" data-id="12">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>COMP-2023-0011</td>
+                                <td>Organic Grocers Inc.</td>
+                                <td>0.0.1234567:2</td>
+                                <td><span class="complaint-type type-shipment">Shipment</span></td>
+                                <td><span class="priority medium">Medium</span></td>
+                                <td>2023-10-21 11:15</td>
+                                <td><span class="status in-progress">In Progress</span></td>
+                                <td>
+                                    <button class="btn-secondary view-complaint" data-id="11">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>COMP-2023-0010</td>
+                                <td>City Supermarkets</td>
+                                <td>0.0.1234567:5</td>
+                                <td><span class="complaint-type type-product">Product</span></td>
+                                <td><span class="priority high">High</span></td>
+                                <td>2023-10-20 16:45</td>
+                                <td><span class="status in-progress">In Progress</span></td>
+                                <td>
+                                    <button class="btn-secondary view-complaint" data-id="10">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>COMP-2023-0009</td>
+                                <td>Local Markets Co.</td>
+                                <td>0.0.1234567:7</td>
+                                <td><span class="complaint-type type-payment">Payment</span></td>
+                                <td><span class="priority medium">Medium</span></td>
+                                <td>2023-10-20 09:30</td>
+                                <td><span class="status resolved">Resolved</span></td>
+                                <td>
+                                    <button class="btn-secondary view-complaint" data-id="9">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>COMP-2023-0008</td>
+                                <td>Green Valley Farms</td>
+                                <td>0.0.1234567:1</td>
+                                <td><span class="complaint-type type-other">Other</span></td>
+                                <td><span class="priority low">Low</span></td>
+                                <td>2023-10-19 13:20</td>
+                                <td><span class="status resolved">Resolved</span></td>
+                                <td>
+                                    <button class="btn-secondary view-complaint" data-id="8">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content" id="pending">
+                    <h4>Complaints Awaiting Response</h4>
+                    <div class="complaint-cards">
+                        <div class="complaint-card">
+                            <div class="complaint-card-header">
+                                <h5>Poor Product Quality - Batch #3</h5>
+                                <span class="priority high">High Priority</span>
+                            </div>
+                            <p><strong>User:</strong> Fresh Market Co.</p>
+                            <p><strong>Batch:</strong> 0.0.1234567:3 (Mixed Berries)</p>
+                            <p><strong>Issue:</strong> Customer reports berries arrived moldy and unsuitable for sale...</p>
+                            <div class="detail-group">
+                                <div class="detail-label">Submitted</div>
+                                <div class="detail-value">2023-10-21 14:30 (2 hours ago)</div>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <button class="btn-success">
+                                    <i class="fas fa-reply"></i> Respond
+                                </button>
+                                <button class="btn-secondary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="complaint-card">
+                            <div class="complaint-card-header">
+                                <h5>Late Shipment - Batch #2</h5>
+                                <span class="priority medium">Medium Priority</span>
+                            </div>
+                            <p><strong>User:</strong> Organic Grocers Inc.</p>
+                            <p><strong>Batch:</strong> 0.0.1234567:2 (Romaine Lettuce)</p>
+                            <p><strong>Issue:</strong> Shipment delayed by 8 hours, affecting store restocking schedule...</p>
+                            <div class="detail-group">
+                                <div class="detail-label">Submitted</div>
+                                <div class="detail-value">2023-10-21 11:15 (5 hours ago)</div>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <button class="btn-success">
+                                    <i class="fas fa-reply"></i> Respond
+                                </button>
+                                <button class="btn-secondary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="resolved">
+                    <h4>Recently Resolved Complaints</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Complaint ID</th>
+                                <th>User</th>
+                                <th>Issue Type</th>
+                                <th>Resolution</th>
+                                <th>Resolved By</th>
+                                <th>Resolved On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>COMP-2023-0009</td>
+                                <td>Local Markets Co.</td>
+                                <td>Payment Dispute</td>
+                                <td>Partial refund issued</td>
+                                <td>Support Agent #23</td>
+                                <td>2023-10-20 14:15</td>
+                                <td>
+                                    <button class="btn-secondary">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>COMP-2023-0008</td>
+                                <td>Green Valley Farms</td>
+                                <td>System Issue</td>
+                                <td>Technical fix applied</td>
+                                <td>Support Agent #17</td>
+                                <td>2023-10-19 16:30</td>
+                                <td>
+                                    <button class="btn-secondary">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>COMP-2023-0007</td>
+                                <td>Sunrise Organics</td>
+                                <td>Quality Concern</td>
+                                <td>Replacement batch sent</td>
+                                <td>Support Agent #23</td>
+                                <td>2023-10-18 11:45</td>
+                                <td>
+                                    <button class="btn-secondary">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tab-content" id="analytics">
+                    <h4>Complaint Analytics</h4>
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Complaints by Type</h3>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Quality Issues</span>
+                                    <span>45% (21)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Shipment Delays</span>
+                                    <span>28% (13)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Product Problems</span>
+                                    <span>15% (7)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Payment Issues</span>
+                                    <span>8% (4)</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Other</span>
+                                    <span>4% (2)</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Resolution Metrics</h3>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Avg. Response Time</span>
+                                    <span>4.2 hours</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Resolution Rate</span>
+                                    <span>89%</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Customer Satisfaction</span>
+                                    <span>4.2/5</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Escalation Rate</span>
+                                    <span>6%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complaint Details View -->
+            <div class="table-container" id="complaintDetails" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Complaint Details - COMP-2023-0012</h3>
+                    <button class="btn-secondary" id="backToList">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </button>
+                </div>
+                
+                <div class="complaint-details">
+                    <div>
+                        <div class="detail-group">
+                            <div class="detail-label">Complaint ID</div>
+                            <div class="detail-value">COMP-2023-0012</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">User</div>
+                            <div class="detail-value">Fresh Market Co. (Buyer)</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Batch ID</div>
+                            <div class="detail-value">0.0.1234567:3</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Product</div>
+                            <div class="detail-value">Mixed Berries</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Complaint Type</div>
+                            <div class="detail-value"><span class="complaint-type type-quality">Quality Issue</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="detail-group">
+                            <div class="detail-label">Priority</div>
+                            <div class="detail-value"><span class="priority high">High</span></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value"><span class="status new">New</span></div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Submitted</div>
+                            <div class="detail-value">2023-10-21 14:30:22</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Last Updated</div>
+                            <div class="detail-value">2023-10-21 14:30:22</div>
+                        </div>
+                        <div class="detail-group">
+                            <div class="detail-label">Assigned To</div>
+                            <div class="detail-value">Unassigned</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Complaint Description</label>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <p><strong>Subject:</strong> Poor Quality - Moldy Berries</p>
+                        <p><strong>Description:</strong></p>
+                        <p>We received batch #3 of mixed berries today and found that approximately 30% of the berries show signs of mold and spoilage. The packaging appears intact but the product quality is unacceptable for retail sale. We request immediate resolution and compensation for this shipment.</p>
+                        <p><strong>Evidence:</strong> Photos attached showing mold growth on multiple berry containers.</p>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <h4>Complaint Timeline</h4>
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h5>Complaint Submitted</h5>
+                            <p>User submitted complaint via web portal</p>
+                            <small>2023-10-21 14:30:22</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="response-form">
+                    <h4>Response & Resolution</h4>
+                    <div class="form-group">
+                        <label for="responseType">Response Type</label>
+                        <select id="responseType">
+                            <option value="">Select response type...</option>
+                            <option value="investigation">Request More Information</option>
+                            <option value="compensation">Offer Compensation</option>
+                            <option value="replacement">Arrange Replacement</option>
+                            <option value="refund">Process Refund</option>
+                            <option value="explanation">Provide Explanation</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignedTo">Assign To</label>
+                        <select id="assignedTo">
+                            <option value="">Select team member...</option>
+                            <option value="agent23">Support Agent #23</option>
+                            <option value="agent17">Support Agent #17</option>
+                            <option value="agent45">Support Agent #45</option>
+                            <option value="manager">Support Manager</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="responseMessage">Response Message</label>
+                        <textarea id="responseMessage" rows="4" placeholder="Type your response to the user..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resolutionStatus">Update Status</label>
+                        <select id="resolutionStatus">
+                            <option value="new">New</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="escalated">Escalated</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-success">
+                            <i class="fas fa-paper-plane"></i> Send Response
+                        </button>
+                        <button class="btn-secondary">
+                            <i class="fas fa-save"></i> Save Draft
+                        </button>
+                        <button class="btn-danger">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Complaint Form -->
+            <div class="form-container" id="newComplaintForm" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Submit New Complaint</h3>
+                    <button class="btn-secondary" id="cancelNewComplaint">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label for="complaintUser">Your Information</label>
+                    <select id="complaintUser">
+                        <option value="">Select your organization...</option>
+                        <option value="freshmarket">Fresh Market Co.</option>
+                        <option value="organicgrocers">Organic Grocers Inc.</option>
+                        <option value="citysuper">City Supermarkets</option>
+                        <option value="localmarkets">Local Markets Co.</option>
+                        <option value="greenvalley">Green Valley Farms</option>
+                        <option value="sunrise">Sunrise Organics</option>
+                        <option value="riverbend">Riverbend Produce</option>
+                        <option value="mountain">Mountain Harvest</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="complaintBatch">Related Batch (Optional)</label>
+                    <select id="complaintBatch">
+                        <option value="">Select batch...</option>
+                        <option value="0.0.1234567:1">0.0.1234567:1 - Organic Tomatoes</option>
+                        <option value="0.0.1234567:2">0.0.1234567:2 - Romaine Lettuce</option>
+                        <option value="0.0.1234567:3">0.0.1234567:3 - Mixed Berries</option>
+                        <option value="0.0.1234567:4">0.0.1234567:4 - Organic Apples</option>
+                        <option value="0.0.1234567:5">0.0.1234567:5 - Organic Carrots</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="complaintType">Complaint Type</label>
+                    <select id="complaintType">
+                        <option value="">Select type...</option>
+                        <option value="quality">Quality Issue</option>
+                        <option value="shipment">Shipment/Delivery</option>
+                        <option value="product">Product Issue</option>
+                        <option value="payment">Payment/Escrow</option>
+                        <option value="technical">Technical Problem</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="complaintPriority">Priority</label>
+                    <select id="complaintPriority">
+                        <option value="low">Low - General inquiry</option>
+                        <option value="medium" selected>Medium - Needs attention</option>
+                        <option value="high">High - Urgent issue</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="complaintSubject">Subject</label>
+                    <input type="text" id="complaintSubject" placeholder="Brief description of the issue...">
+                </div>
+
+                <div class="form-group">
+                    <label for="complaintDescription">Detailed Description</label>
+                    <textarea id="complaintDescription" rows="6" placeholder="Please provide detailed information about the issue..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="complaintEvidence">Attach Evidence (Optional)</label>
+                    <input type="file" id="complaintEvidence" multiple accept="image/*,.pdf,.doc,.docx">
+                    <small style="color: var(--gray);">You can attach photos, documents, or other evidence</small>
+                </div>
+
+                <button class="btn-success" style="width: 100%;">
+                    <i class="fas fa-paper-plane"></i> Submit Complaint
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu toggle functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const headerToggle = document.getElementById('headerToggle');
+        const menuToggle = document.getElementById('menuToggle');
+
+        // Toggle sidebar from header button
+        headerToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar from menu toggle button
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+        });
+
+        // Close sidebar when clicking on a link (for mobile)
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // View complaint buttons
+        const complaintDetails = document.getElementById('complaintDetails');
+        const backToList = document.getElementById('backToList');
+        const newComplaintForm = document.getElementById('newComplaintForm');
+        const cancelNewComplaint = document.getElementById('cancelNewComplaint');
+
+        document.querySelectorAll('.view-complaint').forEach(button => {
+            button.addEventListener('click', function() {
+                // Hide the complaints table and show details
+                document.querySelector('.table-container').style.display = 'none';
+                complaintDetails.style.display = 'block';
+            });
+        });
+
+        backToList.addEventListener('click', function() {
+            complaintDetails.style.display = 'none';
+            newComplaintForm.style.display = 'none';
+            document.querySelector('.table-container').style.display = 'block';
+        });
+
+        // New complaint button
+        document.getElementById('newComplaintBtn').addEventListener('click', function() {
+            document.querySelector('.table-container').style.display = 'none';
+            complaintDetails.style.display = 'none';
+            newComplaintForm.style.display = 'block';
+        });
+
+        cancelNewComplaint.addEventListener('click', function() {
+            newComplaintForm.style.display = 'none';
+            document.querySelector('.table-container').style.display = 'block';
+        });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                alert('Complaints data refreshed!');
+            }, 1500);
+        });
+
+        // Search functionality
+        document.getElementById('searchComplaints').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            // In real app, would filter the complaints table
+            console.log('Searching for:', searchTerm);
+        });
+
+        // Submit new complaint
+        document.querySelector('#newComplaintForm .btn-success').addEventListener('click', function() {
+            const subject = document.getElementById('complaintSubject').value;
+            const description = document.getElementById('complaintDescription').value;
+            
+            if (!subject || !description) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Complaint';
+                alert('Complaint submitted successfully! Our team will respond within 24 hours.');
+                newComplaintForm.style.display = 'none';
+                document.querySelector('.table-container').style.display = 'block';
+            }, 2000);
+        });
+
+        // Simulate real-time updates for stats
+        setInterval(() => {
+            // Update pending complaints count occasionally
+            const pendingComplaintsElement = document.querySelector('.card:nth-child(2) .card-value');
+            let current = parseInt(pendingComplaintsElement.textContent);
+            
+            if (Math.random() > 0.9) {
+                // Simulate new complaint coming in
+                pendingComplaintsElement.textContent = current + 1;
+                
+                // Also update total complaints
+                const totalComplaintsElement = document.querySelector('.card:nth-child(1) .card-value');
+                let total = parseInt(totalComplaintsElement.textContent);
+                totalComplaintsElement.textContent = total + 1;
+            }
+        }, 15000);
+    </script>
+</body>
+</html>
