@@ -636,6 +636,30 @@
                 flex-direction: column;
             }
         }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: var(--success);
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: var(--error);
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -649,7 +673,7 @@
                 </div>
                 <div class="user-menu">
                     <div class="user-info">
-                        <div class="user-name">Global Foods Inc.</div>
+                        <div class="user-name" id="headerCompanyName">Global Foods Inc.</div>
                         <div class="user-role">Buyer</div>
                     </div>
                     <div class="avatar">GF</div>
@@ -663,10 +687,10 @@
         <div class="dashboard">
             <div class="page-header">
                 <h1 class="page-title">Account Settings</h1>
-                <a href="buyer-dashboard.html" class="btn btn-outline">
-                    <i class="fas fa-arrow-left"></i>
-                    Back to Dashboard
-                </a>
+                <button class="btn btn-outline" id="refreshSettings">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
             </div>
 
             <div class="settings-container">
@@ -681,7 +705,7 @@
                     
                     <div class="profile-content">
                         <div>
-                            <div class="avatar-large">GF</div>
+                            <div class="avatar-large" id="profileAvatar">GF</div>
                             <div class="avatar-actions">
                                 <button class="btn btn-outline btn-small">
                                     <i class="fas fa-camera"></i>
@@ -694,30 +718,30 @@
                             </div>
                         </div>
                         
-                        <form class="profile-form">
+                        <form class="profile-form" id="profileForm">
                             <div class="form-group">
                                 <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" class="form-control" value="Global Foods Inc.">
+                                <input type="text" id="companyName" class="form-control" value="Loading...">
                             </div>
                             
                             <div class="form-group">
                                 <label for="contactPerson">Contact Person</label>
-                                <input type="text" id="contactPerson" class="form-control" value="John Smith">
+                                <input type="text" id="contactPerson" class="form-control" value="Loading...">
                             </div>
                             
                             <div class="form-group">
                                 <label for="email">Email Address</label>
-                                <input type="email" id="email" class="form-control" value="john.smith@globalfoods.com">
+                                <input type="email" id="email" class="form-control" value="Loading...">
                             </div>
                             
                             <div class="form-group">
                                 <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" class="form-control" value="+1 (555) 123-4567">
+                                <input type="tel" id="phone" class="form-control" value="Loading...">
                             </div>
                             
                             <div class="form-group full-width">
                                 <label for="businessAddress">Business Address</label>
-                                <textarea id="businessAddress" class="form-control" rows="3">123 Commerce Street, Business District, New York, NY 10001</textarea>
+                                <textarea id="businessAddress" class="form-control" rows="3">Loading...</textarea>
                             </div>
                             
                             <div class="form-group full-width">
@@ -730,9 +754,11 @@
                                     <option>Other</option>
                                 </select>
                             </div>
+
+                            <div id="profileMessage" class="success-message" style="display: none;"></div>
                             
                             <div class="form-group full-width">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" id="saveProfileBtn">
                                     <i class="fas fa-save"></i>
                                     Save Changes
                                 </button>
@@ -757,7 +783,7 @@
                                 <div class="preference-description">Receive alerts for new harvests, price changes, and order updates</div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" id="pushNotifications" checked>
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -768,7 +794,7 @@
                                 <div class="preference-description">Get weekly market reports and important updates via email</div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" id="emailNotifications" checked>
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -779,7 +805,7 @@
                                 <div class="preference-description">Automatically capture GPS when placing orders</div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" id="autoGps" checked>
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -790,7 +816,7 @@
                                 <div class="preference-description">Use dark theme for the application</div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox">
+                                <input type="checkbox" id="darkMode">
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -801,9 +827,18 @@
                                 <div class="preference-description">Notify me when crops I'm interested in drop in price</div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" id="priceAlerts" checked>
                                 <span class="slider"></span>
                             </label>
+                        </div>
+
+                        <div id="preferencesMessage" class="success-message" style="display: none;"></div>
+
+                        <div class="form-group full-width" style="margin-top: 20px;">
+                            <button type="button" class="btn btn-primary" id="savePreferencesBtn">
+                                <i class="fas fa-save"></i>
+                                Save Preferences
+                            </button>
                         </div>
                     </div>
                 </section>
@@ -844,7 +879,7 @@
                                 </div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox">
+                                <input type="checkbox" id="twoFactorAuth">
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -859,7 +894,7 @@
                                     <div class="security-description">View and manage your active login sessions</div>
                                 </div>
                             </div>
-                            <button class="btn btn-outline btn-small">
+                            <button class="btn btn-outline btn-small" id="manageSessionsBtn">
                                 Manage
                             </button>
                         </div>
@@ -874,7 +909,7 @@
                                     <div class="security-description">Backup your wallet recovery phrase</div>
                                 </div>
                             </div>
-                            <button class="btn btn-outline btn-small">
+                            <button class="btn btn-outline btn-small" id="backupWalletBtn">
                                 Backup
                             </button>
                         </div>
@@ -918,24 +953,24 @@
                         
                         <div class="app-detail">
                             <span class="app-label">Wallet Address</span>
-                            <span class="app-value">0.0.1234567</span>
+                            <span class="app-value" id="settingsWalletAddress">Loading...</span>
                         </div>
                     </div>
                     
                     <div style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn btn-outline btn-small">
+                        <button class="btn btn-outline btn-small" id="checkUpdatesBtn">
                             <i class="fas fa-sync-alt"></i>
                             Check for Updates
                         </button>
-                        <button class="btn btn-outline btn-small">
+                        <button class="btn btn-outline btn-small" id="helpSupportBtn">
                             <i class="fas fa-question-circle"></i>
                             Help & Support
                         </button>
-                        <button class="btn btn-outline btn-small">
+                        <button class="btn btn-outline btn-small" id="termsBtn">
                             <i class="fas fa-file-alt"></i>
                             Terms of Service
                         </button>
-                        <button class="btn btn-outline btn-small">
+                        <button class="btn btn-outline btn-small" id="privacyBtn">
                             <i class="fas fa-lock"></i>
                             Privacy Policy
                         </button>
@@ -957,11 +992,11 @@
                     </div>
                     
                     <div class="danger-actions">
-                        <button class="btn btn-outline">
+                        <button class="btn btn-outline" id="exportDataBtn">
                             <i class="fas fa-download"></i>
                             Export My Data
                         </button>
-                        <button class="btn btn-outline">
+                        <button class="btn btn-outline" id="disconnectWalletBtn">
                             <i class="fas fa-unlink"></i>
                             Disconnect Wallet
                         </button>
@@ -994,7 +1029,7 @@
                 <i class="fas fa-wallet"></i>
                 <span>Wallet</span>
             </a>
-            <a href="settings.html" class="nav-item  active">
+            <a href="settings.html" class="nav-item active">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </a>
@@ -1024,6 +1059,8 @@
                         <label for="confirmPassword">Confirm New Password</label>
                         <input type="password" id="confirmPassword" class="form-control" required>
                     </div>
+
+                    <div id="passwordMessage" class="error-message" style="display: none;"></div>
                 </form>
             </div>
             <div class="modal-actions">
@@ -1066,139 +1103,342 @@
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
         const confirmDeleteInput = document.getElementById('confirmDelete');
         const closeModals = document.querySelectorAll('.close-modal');
+        const refreshSettings = document.getElementById('refreshSettings');
         
-        // Open change password modal
-        changePasswordBtn.addEventListener('click', function() {
-            passwordModal.style.display = 'flex';
+        // Profile form elements
+        const profileForm = document.getElementById('profileForm');
+        const companyName = document.getElementById('companyName');
+        const contactPerson = document.getElementById('contactPerson');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const businessAddress = document.getElementById('businessAddress');
+        const businessType = document.getElementById('businessType');
+        const saveProfileBtn = document.getElementById('saveProfileBtn');
+        const profileMessage = document.getElementById('profileMessage');
+        
+        // Preferences elements
+        const pushNotifications = document.getElementById('pushNotifications');
+        const emailNotifications = document.getElementById('emailNotifications');
+        const autoGps = document.getElementById('autoGps');
+        const darkMode = document.getElementById('darkMode');
+        const priceAlerts = document.getElementById('priceAlerts');
+        const savePreferencesBtn = document.getElementById('savePreferencesBtn');
+        const preferencesMessage = document.getElementById('preferencesMessage');
+        
+        // Security elements
+        const twoFactorAuth = document.getElementById('twoFactorAuth');
+        const manageSessionsBtn = document.getElementById('manageSessionsBtn');
+        const backupWalletBtn = document.getElementById('backupWalletBtn');
+        
+        // App info elements
+        const settingsWalletAddress = document.getElementById('settingsWalletAddress');
+        const checkUpdatesBtn = document.getElementById('checkUpdatesBtn');
+        const helpSupportBtn = document.getElementById('helpSupportBtn');
+        const termsBtn = document.getElementById('termsBtn');
+        const privacyBtn = document.getElementById('privacyBtn');
+        
+        // Danger zone elements
+        const exportDataBtn = document.getElementById('exportDataBtn');
+        const disconnectWalletBtn = document.getElementById('disconnectWalletBtn');
+        
+        // Password form elements
+        const passwordForm = document.getElementById('passwordForm');
+        const currentPassword = document.getElementById('currentPassword');
+        const newPassword = document.getElementById('newPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const passwordMessage = document.getElementById('passwordMessage');
+        
+        // Current profile data
+        let profileData = null;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+            loadWalletAddress();
+            setupEventListeners();
         });
         
-        // Open delete account modal
-        deleteAccountBtn.addEventListener('click', function() {
-            deleteModal.style.display = 'flex';
-        });
-        
-        // Close modals
-        function closeAllModals() {
-            passwordModal.style.display = 'none';
-            deleteModal.style.display = 'none';
+        // Load profile data from backend
+        async function loadProfileData() {
+            try {
+                // In a real app, this would fetch from the backend
+                // For now, we'll use mock data
+                profileData = {
+                    company_name: 'Global Foods Inc.',
+                    contact_person: 'John Smith',
+                    email: 'john.smith@globalfoods.com',
+                    phone: '+1 (555) 123-4567',
+                    business_address: '123 Commerce Street, Business District, New York, NY 10001',
+                    business_type: 'Food Distributor'
+                };
+                
+                updateProfileDisplay();
+            } catch (error) {
+                console.error('Error loading profile data:', error);
+                showError('Failed to load profile data');
+            }
         }
         
-        closeModals.forEach(btn => {
-            btn.addEventListener('click', closeAllModals);
-        });
-        
-        cancelPasswordBtn.addEventListener('click', closeAllModals);
-        cancelDeleteBtn.addEventListener('click', closeAllModals);
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target === passwordModal || event.target === deleteModal) {
-                closeAllModals();
-            }
-        });
-        
-        // Enable/disable delete confirmation button
-        confirmDeleteInput.addEventListener('input', function() {
-            confirmDeleteBtn.disabled = this.value !== 'DELETE';
-        });
-        
-        // Save password
-        savePasswordBtn.addEventListener('click', function() {
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                alert('Please fill in all fields');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                alert('New passwords do not match');
-                return;
-            }
-            
-            if (newPassword.length < 8) {
-                alert('Password must be at least 8 characters long');
-                return;
-            }
-            
-            // In a real app, this would send the data to the backend
-            alert('Password changed successfully!');
-            closeAllModals();
-        });
-        
-        // Confirm account deletion
-        confirmDeleteBtn.addEventListener('click', function() {
-            // In a real app, this would send a deletion request to the backend
-            alert('Account deletion request submitted. You will receive a confirmation email.');
-            closeAllModals();
-        });
-        
-        // Toggle switches functionality
-        document.querySelectorAll('.toggle-switch input').forEach(switchInput => {
-            switchInput.addEventListener('change', function() {
-                const setting = this.parentElement.parentElement.querySelector('.preference-title').textContent;
-                console.log(`${setting} is now ${this.checked ? 'enabled' : 'disabled'}`);
+        // Load wallet address
+        async function loadWalletAddress() {
+            try {
+                const response = await fetch('buyer_backend.php?action=get_wallet');
+                const result = await response.json();
                 
-                // In a real app, this would save the preference to the backend
-                if (this.checked) {
-                    // Show confirmation for important settings
-                    if (setting === 'Two-Factor Authentication') {
-                        alert('Two-factor authentication has been enabled. You will need to set it up completely.');
-                    }
+                if (result.success) {
+                    settingsWalletAddress.textContent = result.wallet_address;
+                } else {
+                    settingsWalletAddress.textContent = '0.0.1234567';
+                }
+            } catch (error) {
+                console.error('Error loading wallet address:', error);
+                settingsWalletAddress.textContent = '0.0.1234567';
+            }
+        }
+        
+        // Update profile display with data
+        function updateProfileDisplay() {
+            if (!profileData) return;
+            
+            companyName.value = profileData.company_name;
+            contactPerson.value = profileData.contact_person;
+            email.value = profileData.email;
+            phone.value = profileData.phone;
+            businessAddress.value = profileData.business_address;
+            businessType.value = profileData.business_type;
+            
+            // Update header
+            document.getElementById('headerCompanyName').textContent = profileData.company_name;
+            document.getElementById('profileAvatar').textContent = getInitials(profileData.company_name);
+        }
+        
+        // Get initials from company name
+        function getInitials(companyName) {
+            return companyName
+                .split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Refresh settings
+            refreshSettings.addEventListener('click', function() {
+                loadProfileData();
+                loadWalletAddress();
+                showMessage(profileMessage, 'Settings refreshed successfully', 'success');
+            });
+            
+            // Profile form submission
+            profileForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                try {
+                    saveProfileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                    saveProfileBtn.disabled = true;
+                    
+                    // Prepare data for backend
+                    const formData = {
+                        company_name: companyName.value,
+                        contact_person: contactPerson.value,
+                        email: email.value,
+                        phone: phone.value,
+                        business_address: businessAddress.value,
+                        business_type: businessType.value
+                    };
+                    
+                    // In a real app, this would send to the backend
+                    // For now, we'll simulate a successful update
+                    setTimeout(function() {
+                        // Update local data
+                        profileData = formData;
+                        updateProfileDisplay();
+                        
+                        // Show success message
+                        showMessage(profileMessage, 'Profile updated successfully!', 'success');
+                        
+                        // Reset button
+                        saveProfileBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                        saveProfileBtn.disabled = false;
+                    }, 1000);
+                    
+                } catch (error) {
+                    showMessage(profileMessage, 'Failed to update profile: ' + error.message, 'error');
+                    saveProfileBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                    saveProfileBtn.disabled = false;
                 }
             });
-        });
-        
-        // Profile form submission
-        document.querySelector('.profile-form').addEventListener('submit', function(e) {
-            e.preventDefault();
             
-            // In a real app, this would send the data to the backend
-            alert('Profile updated successfully!');
-        });
-        
-        // Bottom navigation active state
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.nav-item').forEach(i => {
-                    i.classList.remove('active');
-                });
-                this.classList.add('active');
+            // Save preferences
+            savePreferencesBtn.addEventListener('click', function() {
+                // In a real app, this would save to the backend
+                // For now, we'll just show a success message
+                showMessage(preferencesMessage, 'Preferences saved successfully!', 'success');
             });
-        });
-        
-        // Close modals with escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
+            
+            // Security actions
+            twoFactorAuth.addEventListener('change', function() {
+                if (this.checked) {
+                    alert('Two-factor authentication has been enabled. You will need to set it up completely.');
+                }
+            });
+            
+            manageSessionsBtn.addEventListener('click', function() {
+                alert('Session management would open here.');
+            });
+            
+            backupWalletBtn.addEventListener('click', function() {
+                alert('Wallet backup process would start here.');
+            });
+            
+            // App info actions
+            checkUpdatesBtn.addEventListener('click', function() {
+                alert('Checking for updates... You are using the latest version.');
+            });
+            
+            helpSupportBtn.addEventListener('click', function() {
+                alert('Redirecting to help center...');
+            });
+            
+            termsBtn.addEventListener('click', function() {
+                alert('Opening terms of service...');
+            });
+            
+            privacyBtn.addEventListener('click', function() {
+                alert('Opening privacy policy...');
+            });
+            
+            // Danger zone actions
+            exportDataBtn.addEventListener('click', function() {
+                alert('Your data export has been started. You will receive an email when it is ready for download.');
+            });
+            
+            disconnectWalletBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to disconnect your wallet? You will need to reconnect it to make purchases.')) {
+                    alert('Wallet disconnected successfully. You can reconnect it anytime from the wallet page.');
+                }
+            });
+            
+            // Open change password modal
+            changePasswordBtn.addEventListener('click', function() {
+                passwordModal.style.display = 'flex';
+                passwordForm.reset();
+                passwordMessage.style.display = 'none';
+            });
+            
+            // Open delete account modal
+            deleteAccountBtn.addEventListener('click', function() {
+                deleteModal.style.display = 'flex';
+                confirmDeleteInput.value = '';
+                confirmDeleteBtn.disabled = true;
+            });
+            
+            // Close modals
+            function closeAllModals() {
+                passwordModal.style.display = 'none';
+                deleteModal.style.display = 'none';
+            }
+            
+            closeModals.forEach(btn => {
+                btn.addEventListener('click', closeAllModals);
+            });
+            
+            cancelPasswordBtn.addEventListener('click', closeAllModals);
+            cancelDeleteBtn.addEventListener('click', closeAllModals);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === passwordModal || event.target === deleteModal) {
+                    closeAllModals();
+                }
+            });
+            
+            // Enable/disable delete confirmation button
+            confirmDeleteInput.addEventListener('input', function() {
+                confirmDeleteBtn.disabled = this.value !== 'DELETE';
+            });
+            
+            // Save password
+            savePasswordBtn.addEventListener('click', function() {
+                const currentPwd = currentPassword.value;
+                const newPwd = newPassword.value;
+                const confirmPwd = confirmPassword.value;
+                
+                if (!currentPwd || !newPwd || !confirmPwd) {
+                    showMessage(passwordMessage, 'Please fill in all fields', 'error');
+                    return;
+                }
+                
+                if (newPwd !== confirmPwd) {
+                    showMessage(passwordMessage, 'New passwords do not match', 'error');
+                    return;
+                }
+                
+                if (newPwd.length < 8) {
+                    showMessage(passwordMessage, 'Password must be at least 8 characters long', 'error');
+                    return;
+                }
+                
+                // In a real app, this would send the data to the backend
+                // For now, we'll simulate a successful password change
+                setTimeout(function() {
+                    showMessage(passwordMessage, 'Password changed successfully!', 'success');
+                    setTimeout(closeAllModals, 1500);
+                }, 1000);
+            });
+            
+            // Confirm account deletion
+            confirmDeleteBtn.addEventListener('click', function() {
+                // In a real app, this would send a deletion request to the backend
+                alert('Account deletion request submitted. You will receive a confirmation email.');
                 closeAllModals();
-            }
-        });
+            });
+            
+            // Toggle switches functionality for preferences
+            document.querySelectorAll('.toggle-switch input').forEach(switchInput => {
+                switchInput.addEventListener('change', function() {
+                    const setting = this.parentElement.parentElement.querySelector('.preference-title').textContent;
+                    console.log(`${setting} is now ${this.checked ? 'enabled' : 'disabled'}`);
+                });
+            });
+            
+            // Bottom navigation active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+            
+            // Close modals with escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeAllModals();
+                }
+            });
+        }
         
-        // Additional settings actions
-        document.querySelectorAll('.btn-outline').forEach(button => {
-            if (button.textContent.includes('Export My Data')) {
-                button.addEventListener('click', function() {
-                    alert('Your data export has been started. You will receive an email when it is ready for download.');
-                });
-            }
+        // Utility functions
+        function showMessage(element, message, type) {
+            element.textContent = message;
+            element.className = type === 'success' ? 'success-message' : 'error-message';
+            element.style.display = 'block';
             
-            if (button.textContent.includes('Disconnect Wallet')) {
-                button.addEventListener('click', function() {
-                    if (confirm('Are you sure you want to disconnect your wallet? You will need to reconnect it to make purchases.')) {
-                        alert('Wallet disconnected successfully. You can reconnect it anytime from the wallet page.');
-                    }
-                });
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
             }
-            
-            if (button.textContent.includes('Help & Support')) {
-                button.addEventListener('click', function() {
-                    alert('Redirecting to help center...');
-                    // In a real app, this would open the help center
-                });
-            }
-        });
+        }
+        
+        function showError(message) {
+            alert('Error: ' + message);
+        }
     </script>
 </body>
 </html>

@@ -682,6 +682,21 @@
                 flex-direction: column;
             }
         }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: var(--error);
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -709,9 +724,9 @@
         <div class="dashboard">
             <div class="page-header">
                 <h1 class="page-title">My Wallet</h1>
-                <button class="btn btn-outline">
-                    <i class="fas fa-history"></i>
-                    Transaction History
+                <button class="btn btn-outline" id="refreshWallet">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
                 </button>
             </div>
 
@@ -730,10 +745,10 @@
                         </button>
                     </div>
                 </div>
-                <div class="wallet-balance">5,250.75 HBAR</div>
+                <div class="wallet-balance" id="walletBalance">Loading...</div>
                 <div class="wallet-address">
-                    <span>0.0.1234567</span>
-                    <button class="btn-copy" title="Copy address">
+                    <span id="walletAddress">Loading...</span>
+                    <button class="btn-copy" title="Copy address" id="copyAddressBtn">
                         <i class="fas fa-copy"></i>
                     </button>
                 </div>
@@ -741,11 +756,11 @@
                     <div style="display: flex; gap: 20px; font-size: 14px;">
                         <div>
                             <div style="opacity: 0.8;">Available</div>
-                            <div style="font-weight: 600;">4,080.25 HBAR</div>
+                            <div style="font-weight: 600;" id="availableBalance">Loading...</div>
                         </div>
                         <div>
                             <div style="opacity: 0.8;">In Escrow</div>
-                            <div style="font-weight: 600;">1,170.50 HBAR</div>
+                            <div style="font-weight: 600;" id="escrowBalance">Loading...</div>
                         </div>
                     </div>
                 </div>
@@ -794,128 +809,16 @@
                         <div class="filter-tab" data-filter="escrow">Escrow</div>
                     </div>
                 </div>
-                <div class="transaction-list">
-                    <!-- Transaction 1 -->
-                    <div class="transaction-item" data-type="escrow">
-                        <div class="transaction-icon icon-escrow">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <div class="transaction-title">Escrow Payment</div>
-                            <div class="transaction-meta">To: Rajesh Kumar • TX: 0.0.1234567-1234567890</div>
-                        </div>
-                        <div>
-                            <div class="transaction-amount amount-expense">-1,250 HBAR</div>
-                            <div class="transaction-date">Oct 18, 2023</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Transaction 2 -->
-                    <div class="transaction-item" data-type="received">
-                        <div class="transaction-icon icon-income">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <div class="transaction-title">Received HBAR</div>
-                            <div class="transaction-meta">From: Exchange • TX: 0.0.2345678-2345678901</div>
-                        </div>
-                        <div>
-                            <div class="transaction-amount amount-income">+2,000 HBAR</div>
-                            <div class="transaction-date">Oct 15, 2023</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Transaction 3 -->
-                    <div class="transaction-item" data-type="escrow">
-                        <div class="transaction-icon icon-escrow">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <div class="transaction-title">Escrow Payment</div>
-                            <div class="transaction-meta">To: Priya Sharma • TX: 0.0.3456789-3456789012</div>
-                        </div>
-                        <div>
-                            <div class="transaction-amount amount-expense">-980 HBAR</div>
-                            <div class="transaction-date">Oct 12, 2023</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Transaction 4 -->
-                    <div class="transaction-item" data-type="sent">
-                        <div class="transaction-icon icon-expense">
-                            <i class="fas fa-arrow-up"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <div class="transaction-title">Sent HBAR</div>
-                            <div class="transaction-meta">To: Supplier Payment • TX: 0.0.4567890-4567890123</div>
-                        </div>
-                        <div>
-                            <div class="transaction-amount amount-expense">-500 HBAR</div>
-                            <div class="transaction-date">Oct 10, 2023</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Transaction 5 -->
-                    <div class="transaction-item" data-type="received">
-                        <div class="transaction-icon icon-income">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <div class="transaction-title">Refund Received</div>
-                            <div class="transaction-meta">From: Escrow Release • TX: 0.0.5678901-5678901234</div>
-                        </div>
-                        <div>
-                            <div class="transaction-amount amount-income">+750 HBAR</div>
-                            <div class="transaction-date">Oct 5, 2023</div>
-                        </div>
-                    </div>
+                <div class="transaction-list" id="transactionList">
+                    <div class="loading">Loading transactions...</div>
                 </div>
             </div>
 
             <!-- Token Balances -->
             <div class="tokens-section">
                 <h2 class="section-title">Token Balances</h2>
-                <div class="tokens-grid">
-                    <div class="token-card">
-                        <div class="token-icon">
-                            <i class="fas fa-coins"></i>
-                        </div>
-                        <div class="token-details">
-                            <div class="token-name">HBAR</div>
-                            <div class="token-balance">5,250.75</div>
-                            <div class="token-symbol">Hedera Hashgraph</div>
-                        </div>
-                    </div>
-                    <div class="token-card">
-                        <div class="token-icon" style="background: #FF6B00;">
-                            <i class="fas fa-apple-alt"></i>
-                        </div>
-                        <div class="token-details">
-                            <div class="token-name">AGRI</div>
-                            <div class="token-balance">1,250.50</div>
-                            <div class="token-symbol">AgriChain Token</div>
-                        </div>
-                    </div>
-                    <div class="token-card">
-                        <div class="token-icon" style="background: #2196F3;">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <div class="token-details">
-                            <div class="token-name">WATER</div>
-                            <div class="token-balance">850.25</div>
-                            <div class="token-symbol">Water Credits</div>
-                        </div>
-                    </div>
-                    <div class="token-card">
-                        <div class="token-icon" style="background: #9C27B0;">
-                            <i class="fas fa-leaf"></i>
-                        </div>
-                        <div class="token-details">
-                            <div class="token-name">CARBON</div>
-                            <div class="token-balance">420.75</div>
-                            <div class="token-symbol">Carbon Credits</div>
-                        </div>
-                    </div>
+                <div class="tokens-grid" id="tokensGrid">
+                    <div class="loading">Loading token balances...</div>
                 </div>
             </div>
         </div>
@@ -924,7 +827,7 @@
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <div class="nav-items">
-            <a href="buy.html" class="nav-item ">
+            <a href="buy.html" class="nav-item">
                 <i class="fas fa-home"></i>
                 <span>Market</span>
             </a>
@@ -956,7 +859,7 @@
             </div>
             
             <div class="qr-section">
-                <div class="qr-code">
+                <div class="qr-code" id="qrCodeContainer">
                     QR Code would appear here
                 </div>
                 <p>Scan this QR code to receive HBAR</p>
@@ -965,8 +868,8 @@
             <div class="form-group">
                 <label>Your Wallet Address</label>
                 <div class="input-with-icon">
-                    <input type="text" class="form-control" value="0.0.1234567" readonly>
-                    <span class="input-icon">
+                    <input type="text" class="form-control" id="receiveAddress" value="Loading..." readonly>
+                    <span class="input-icon" id="copyReceiveAddress">
                         <i class="fas fa-copy"></i>
                     </span>
                 </div>
@@ -991,17 +894,17 @@
             
             <div class="form-group">
                 <label>Recipient Address</label>
-                <input type="text" class="form-control" placeholder="0.0.xxxxxxxx">
+                <input type="text" class="form-control" id="recipientAddress" placeholder="0.0.xxxxxxxx">
             </div>
             
             <div class="form-group">
                 <label>Amount (HBAR)</label>
-                <input type="number" class="form-control" placeholder="0.00" step="0.01">
+                <input type="number" class="form-control" id="sendAmount" placeholder="0.00" step="0.01" max="5000">
             </div>
             
             <div class="form-group">
                 <label>Memo (Optional)</label>
-                <input type="text" class="form-control" placeholder="Add a note...">
+                <input type="text" class="form-control" id="sendMemo" placeholder="Add a note...">
             </div>
             
             <div class="transaction-info" style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;">
@@ -1014,6 +917,8 @@
                     <span id="sendTotal">0.0001 HBAR</span>
                 </div>
             </div>
+
+            <div id="sendError" class="error-message" style="display: none;"></div>
             
             <div class="modal-actions">
                 <button class="btn btn-outline" id="closeSendModal">
@@ -1037,12 +942,12 @@
             
             <div class="form-group">
                 <label>Amount (HBAR)</label>
-                <input type="number" class="form-control" placeholder="0.00" step="0.01">
+                <input type="number" class="form-control" id="buyAmount" placeholder="0.00" step="0.01">
             </div>
             
             <div class="form-group">
                 <label>Payment Method</label>
-                <select class="form-control">
+                <select class="form-control" id="paymentMethod">
                     <option>Credit/Debit Card</option>
                     <option>Bank Transfer</option>
                     <option>Other Crypto</option>
@@ -1063,6 +968,8 @@
                     <span id="buyTotal">$0.00 USD</span>
                 </div>
             </div>
+
+            <div id="buyError" class="error-message" style="display: none;"></div>
             
             <div class="modal-actions">
                 <button class="btn btn-outline" id="closeBuyModal">
@@ -1091,164 +998,458 @@
         const confirmSend = document.getElementById('confirmSend');
         const confirmBuy = document.getElementById('confirmBuy');
         const filterTabs = document.querySelectorAll('.filter-tab');
-        const transactionItems = document.querySelectorAll('.transaction-item');
         const copyButtons = document.querySelectorAll('.btn-copy, .input-icon');
+        const refreshWallet = document.getElementById('refreshWallet');
         
-        // Show Receive Modal
-        showReceiveModal.addEventListener('click', function() {
-            receiveModal.style.display = 'flex';
+        // Wallet data elements
+        const walletBalance = document.getElementById('walletBalance');
+        const walletAddress = document.getElementById('walletAddress');
+        const availableBalance = document.getElementById('availableBalance');
+        const escrowBalance = document.getElementById('escrowBalance');
+        const transactionList = document.getElementById('transactionList');
+        const tokensGrid = document.getElementById('tokensGrid');
+        const receiveAddress = document.getElementById('receiveAddress');
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+        
+        // Send form elements
+        const recipientAddress = document.getElementById('recipientAddress');
+        const sendAmount = document.getElementById('sendAmount');
+        const sendMemo = document.getElementById('sendMemo');
+        const sendTotal = document.getElementById('sendTotal');
+        const sendError = document.getElementById('sendError');
+        
+        // Buy form elements
+        const buyAmount = document.getElementById('buyAmount');
+        const paymentMethod = document.getElementById('paymentMethod');
+        const buyTotal = document.getElementById('buyTotal');
+        const buyError = document.getElementById('buyError');
+        
+        // Current wallet data
+        let walletData = null;
+        let transactions = [];
+        let tokens = [];
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadWalletData();
+            setupEventListeners();
         });
         
-        // Show Send Modal
-        showSendModal.addEventListener('click', function() {
-            sendModal.style.display = 'flex';
-        });
-        
-        // Show Buy Modal
-        showBuyModal.addEventListener('click', function() {
-            buyModal.style.display = 'flex';
-        });
-        
-        // Close Modals
-        function closeAllModals() {
-            receiveModal.style.display = 'none';
-            sendModal.style.display = 'none';
-            buyModal.style.display = 'none';
+        // Load wallet data from backend
+        async function loadWalletData() {
+            try {
+                showLoadingState();
+                
+                const response = await fetch('buyer_backend.php?action=get_wallet');
+                const result = await response.json();
+                
+                if (result.success) {
+                    walletData = result;
+                    updateWalletDisplay();
+                    loadTransactions();
+                    loadTokenBalances();
+                } else {
+                    throw new Error(result.error || 'Failed to load wallet data');
+                }
+            } catch (error) {
+                console.error('Error loading wallet data:', error);
+                showError('Failed to load wallet data: ' + error.message);
+            }
         }
         
-        closeModal.forEach(btn => {
-            btn.addEventListener('click', closeAllModals);
-        });
+        // Show loading state
+        function showLoadingState() {
+            walletBalance.textContent = 'Loading...';
+            walletAddress.textContent = 'Loading...';
+            availableBalance.textContent = 'Loading...';
+            escrowBalance.textContent = 'Loading...';
+            transactionList.innerHTML = '<div class="loading">Loading transactions...</div>';
+            tokensGrid.innerHTML = '<div class="loading">Loading token balances...</div>';
+        }
         
-        closeReceiveModal.addEventListener('click', closeAllModals);
-        closeSendModal.addEventListener('click', closeAllModals);
-        closeBuyModal.addEventListener('click', closeAllModals);
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target === receiveModal || event.target === sendModal || event.target === buyModal) {
-                closeAllModals();
-            }
-        });
-        
-        // Confirm Send
-        confirmSend.addEventListener('click', function() {
-            // Simulate transaction processing
-            confirmSend.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        // Update wallet display with data
+        function updateWalletDisplay() {
+            if (!walletData) return;
             
-            setTimeout(function() {
-                // Success message
-                alert('Transaction sent successfully!');
+            // Format and display balances
+            walletBalance.textContent = formatNumber(walletData.balance) + ' HBAR';
+            walletAddress.textContent = walletData.wallet_address;
+            receiveAddress.value = walletData.wallet_address;
+            
+            // Calculate available and escrow balances (simplified logic)
+            const available = walletData.balance * 0.8; // 80% available
+            const escrow = walletData.balance * 0.2; // 20% in escrow
+            
+            availableBalance.textContent = formatNumber(available) + ' HBAR';
+            escrowBalance.textContent = formatNumber(escrow) + ' HBAR';
+            
+            // Update QR code display
+            qrCodeContainer.textContent = `QR for ${walletData.wallet_address}`;
+        }
+        
+        // Load transactions from backend
+        async function loadTransactions() {
+            try {
+                if (!walletData || !walletData.transactions) {
+                    transactionList.innerHTML = '<div class="loading">No transaction data available</div>';
+                    return;
+                }
                 
-                // Close modal
+                transactions = walletData.transactions;
+                displayTransactions(transactions);
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+                transactionList.innerHTML = '<div class="error-message">Failed to load transactions</div>';
+            }
+        }
+        
+        // Display transactions in the list
+        function displayTransactions(transactionsToShow) {
+            if (!transactionsToShow || transactionsToShow.length === 0) {
+                transactionList.innerHTML = '<div class="loading">No transactions found</div>';
+                return;
+            }
+            
+            transactionList.innerHTML = transactionsToShow.map(transaction => {
+                const type = transaction.type.toLowerCase();
+                const isIncome = type === 'deposit' || type === 'refund';
+                const isEscrow = type === 'escrow';
+                const isExpense = !isIncome && !isEscrow;
+                
+                const iconClass = isIncome ? 'icon-income' : (isEscrow ? 'icon-escrow' : 'icon-expense');
+                const amountClass = isIncome ? 'amount-income' : 'amount-expense';
+                const icon = isIncome ? 'fa-arrow-down' : (isEscrow ? 'fa-lock' : 'fa-arrow-up');
+                const sign = isIncome ? '+' : '-';
+                
+                return `
+                    <div class="transaction-item" data-type="${type}">
+                        <div class="transaction-icon ${iconClass}">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">${transaction.description}</div>
+                            <div class="transaction-meta">TX: ${transaction.transaction_hash || 'Pending'}</div>
+                        </div>
+                        <div>
+                            <div class="transaction-amount ${amountClass}">${sign}${formatNumber(transaction.amount_hbar)} HBAR</div>
+                            <div class="transaction-date">${formatDate(transaction.created_at)}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Load token balances
+        async function loadTokenBalances() {
+            try {
+                // In a real app, this would come from the backend
+                // For now, we'll use mock data
+                tokens = [
+                    { name: 'HBAR', balance: walletData ? walletData.balance : 0, symbol: 'Hedera Hashgraph' },
+                    { name: 'AGRI', balance: 1250.50, symbol: 'AgriChain Token' },
+                    { name: 'WATER', balance: 850.25, symbol: 'Water Credits' },
+                    { name: 'CARBON', balance: 420.75, symbol: 'Carbon Credits' }
+                ];
+                
+                displayTokenBalances();
+            } catch (error) {
+                console.error('Error loading token balances:', error);
+                tokensGrid.innerHTML = '<div class="error-message">Failed to load token balances</div>';
+            }
+        }
+        
+        // Display token balances
+        function displayTokenBalances() {
+            if (!tokens || tokens.length === 0) {
+                tokensGrid.innerHTML = '<div class="loading">No token balances found</div>';
+                return;
+            }
+            
+            tokensGrid.innerHTML = tokens.map(token => {
+                const iconColors = {
+                    'HBAR': '#2E7D32',
+                    'AGRI': '#FF6B00',
+                    'WATER': '#2196F3',
+                    'CARBON': '#9C27B0'
+                };
+                
+                const icons = {
+                    'HBAR': 'fa-coins',
+                    'AGRI': 'fa-apple-alt',
+                    'WATER': 'fa-tint',
+                    'CARBON': 'fa-leaf'
+                };
+                
+                const color = iconColors[token.name] || '#2E7D32';
+                const icon = icons[token.name] || 'fa-coins';
+                
+                return `
+                    <div class="token-card">
+                        <div class="token-icon" style="background: ${color};">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="token-details">
+                            <div class="token-name">${token.name}</div>
+                            <div class="token-balance">${formatNumber(token.balance)}</div>
+                            <div class="token-symbol">${token.symbol}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Refresh wallet
+            refreshWallet.addEventListener('click', loadWalletData);
+            
+            // Show Receive Modal
+            showReceiveModal.addEventListener('click', function() {
+                receiveModal.style.display = 'flex';
+            });
+            
+            // Show Send Modal
+            showSendModal.addEventListener('click', function() {
+                sendModal.style.display = 'flex';
+                sendError.style.display = 'none';
+                recipientAddress.value = '';
+                sendAmount.value = '';
+                sendMemo.value = '';
+                sendTotal.textContent = '0.0001 HBAR';
+            });
+            
+            // Show Buy Modal
+            showBuyModal.addEventListener('click', function() {
+                buyModal.style.display = 'flex';
+                buyError.style.display = 'none';
+                buyAmount.value = '';
+                buyTotal.textContent = '$0.00 USD';
+            });
+            
+            // Close Modals
+            function closeAllModals() {
+                receiveModal.style.display = 'none';
                 sendModal.style.display = 'none';
+                buyModal.style.display = 'none';
+            }
+            
+            closeModal.forEach(btn => {
+                btn.addEventListener('click', closeAllModals);
+            });
+            
+            closeReceiveModal.addEventListener('click', closeAllModals);
+            closeSendModal.addEventListener('click', closeAllModals);
+            closeBuyModal.addEventListener('click', closeAllModals);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === receiveModal || event.target === sendModal || event.target === buyModal) {
+                    closeAllModals();
+                }
+            });
+            
+            // Confirm Send
+            confirmSend.addEventListener('click', async function() {
+                const amount = parseFloat(sendAmount.value);
+                const recipient = recipientAddress.value.trim();
                 
-                // Reset button
-                confirmSend.innerHTML = '<i class="fas fa-paper-plane"></i> Send Now';
-            }, 2000);
-        });
-        
-        // Confirm Buy
-        confirmBuy.addEventListener('click', function() {
-            // In a real app, this would redirect to payment processor
-            alert('Redirecting to payment processor...');
-        });
-        
-        // Filter Transactions
-        filterTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Remove active class from all tabs
-                filterTabs.forEach(t => t.classList.remove('active'));
+                // Validation
+                if (!recipient || !amount) {
+                    showSendError('Please fill in all required fields');
+                    return;
+                }
                 
-                // Add active class to clicked tab
-                this.classList.add('active');
+                if (amount <= 0) {
+                    showSendError('Amount must be greater than 0');
+                    return;
+                }
                 
-                // Get filter value
-                const filter = this.getAttribute('data-filter');
+                if (!walletData || amount > walletData.balance * 0.8) {
+                    showSendError('Insufficient balance. Remember some funds are held in escrow.');
+                    return;
+                }
                 
-                // Filter transaction items
-                transactionItems.forEach(item => {
+                if (!isValidAddress(recipient)) {
+                    showSendError('Please enter a valid Hedera address (format: 0.0.xxxxxxx)');
+                    return;
+                }
+                
+                try {
+                    // Simulate transaction processing
+                    confirmSend.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    confirmSend.disabled = true;
+                    
+                    // In a real app, this would call the backend to process the transaction
+                    // For now, we'll simulate a successful transaction
+                    setTimeout(function() {
+                        // Success message
+                        alert('Transaction sent successfully!');
+                        
+                        // Close modal
+                        sendModal.style.display = 'none';
+                        
+                        // Reset button
+                        confirmSend.innerHTML = '<i class="fas fa-paper-plane"></i> Send Now';
+                        confirmSend.disabled = false;
+                        
+                        // Reload wallet data to reflect the change
+                        loadWalletData();
+                    }, 2000);
+                } catch (error) {
+                    showSendError('Transaction failed: ' + error.message);
+                    confirmSend.innerHTML = '<i class="fas fa-paper-plane"></i> Send Now';
+                    confirmSend.disabled = false;
+                }
+            });
+            
+            // Confirm Buy
+            confirmBuy.addEventListener('click', function() {
+                const amount = parseFloat(buyAmount.value);
+                
+                // Validation
+                if (!amount || amount <= 0) {
+                    showBuyError('Please enter a valid amount');
+                    return;
+                }
+                
+                // In a real app, this would redirect to payment processor
+                alert('Redirecting to payment processor...');
+                
+                // For demo purposes, we'll simulate a successful purchase
+                setTimeout(function() {
+                    alert('Purchase completed successfully!');
+                    buyModal.style.display = 'none';
+                    loadWalletData(); // Refresh wallet data
+                }, 1000);
+            });
+            
+            // Filter Transactions
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Get filter value
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Filter transaction items
+                    const transactionItems = document.querySelectorAll('.transaction-item');
+                    
                     if (filter === 'all') {
-                        item.style.display = 'grid';
-                    } else {
-                        const type = item.getAttribute('data-type');
-                        if (type === filter) {
+                        transactionItems.forEach(item => {
                             item.style.display = 'grid';
-                        } else {
-                            item.style.display = 'none';
-                        }
+                        });
+                    } else {
+                        transactionItems.forEach(item => {
+                            const type = item.getAttribute('data-type');
+                            if (type === filter) {
+                                item.style.display = 'grid';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
                     }
                 });
             });
-        });
-        
-        // Copy Address Functionality
-        copyButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const address = '0.0.1234567';
-                navigator.clipboard.writeText(address).then(() => {
-                    // Show temporary feedback
-                    const originalHTML = this.innerHTML;
-                    this.innerHTML = '<i class="fas fa-check"></i>';
-                    setTimeout(() => {
-                        this.innerHTML = originalHTML;
-                    }, 2000);
+            
+            // Copy Address Functionality
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const address = walletData ? walletData.wallet_address : '0.0.1234567';
+                    navigator.clipboard.writeText(address).then(() => {
+                        // Show temporary feedback
+                        const originalHTML = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => {
+                            this.innerHTML = originalHTML;
+                        }, 2000);
+                    });
                 });
             });
-        });
-        
-        // Quick Action Cards
-        document.getElementById('showSwapModal').addEventListener('click', function() {
-            alert('Token swap functionality would open here.');
-        });
-        
-        document.getElementById('showBackupModal').addEventListener('click', function() {
-            alert('Wallet backup process would start here.');
-        });
-        
-        document.getElementById('showExplorer').addEventListener('click', function() {
-            window.open('https://hashscan.io/testnet/account/0.0.1234567', '_blank');
-        });
-        
-        // Bottom navigation active state
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.nav-item').forEach(i => {
-                    i.classList.remove('active');
-                });
-                this.classList.add('active');
+            
+            // Quick Action Cards
+            document.getElementById('showSwapModal').addEventListener('click', function() {
+                alert('Token swap functionality would open here.');
             });
-        });
+            
+            document.getElementById('showBackupModal').addEventListener('click', function() {
+                alert('Wallet backup process would start here.');
+            });
+            
+            document.getElementById('showExplorer').addEventListener('click', function() {
+                const address = walletData ? walletData.wallet_address : '0.0.1234567';
+                window.open('https://hashscan.io/testnet/account/' + address, '_blank');
+            });
+            
+            // Bottom navigation active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+            
+            // Close modals with escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeAllModals();
+                }
+            });
+            
+            // Update send total when amount changes
+            sendAmount.addEventListener('input', function() {
+                const amount = parseFloat(this.value) || 0;
+                const fee = 0.0001;
+                const total = amount + fee;
+                sendTotal.textContent = total.toFixed(4) + ' HBAR';
+            });
+            
+            // Update buy total when amount changes
+            buyAmount.addEventListener('input', function() {
+                const amount = parseFloat(this.value) || 0;
+                const rate = 0.06;
+                const fee = amount * rate * 0.025;
+                const total = (amount * rate) + fee;
+                buyTotal.textContent = '$' + total.toFixed(2) + ' USD';
+            });
+        }
         
-        // Close modals with escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeAllModals();
-            }
-        });
+        // Utility functions
+        function formatNumber(num) {
+            return new Intl.NumberFormat().format(num);
+        }
         
-        // Update send total when amount changes
-        const amountInput = document.querySelector('#sendModal input[type="number"]');
-        const sendTotal = document.getElementById('sendTotal');
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
         
-        amountInput.addEventListener('input', function() {
-            const amount = parseFloat(this.value) || 0;
-            const fee = 0.0001;
-            const total = amount + fee;
-            sendTotal.textContent = total.toFixed(4) + ' HBAR';
-        });
+        function isValidAddress(address) {
+            return /^0\.0\.\d+$/.test(address);
+        }
         
-        // Update buy total when amount changes
-        const buyAmountInput = document.querySelector('#buyModal input[type="number"]');
-        const buyTotal = document.getElementById('buyTotal');
+        function showSendError(message) {
+            sendError.textContent = message;
+            sendError.style.display = 'block';
+        }
         
-        buyAmountInput.addEventListener('input', function() {
-            const amount = parseFloat(this.value) || 0;
-            const rate = 0.06;
-            const fee = amount * rate * 0.025;
-            const total = (amount * rate) + fee;
-            buyTotal.textContent = '$' + total.toFixed(2) + ' USD';
-        });
+        function showBuyError(message) {
+            buyError.textContent = message;
+            buyError.style.display = 'block';
+        }
+        
+        function showError(message) {
+            alert('Error: ' + message);
+        }
     </script>
 </body>
 </html>
