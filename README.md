@@ -112,7 +112,7 @@ Populates testnet with:
 
 * **Blockchain:** Hedera HTS, HCS, EVM contracts
 * **Mobile:** React Native + Expo (offline-ready)
-* **Web:** Next.js + Tailwind
+* **Web:** PHP + Tailwind, HTML
 * **Storage:** IPFS (encrypted PII off-chain)
 * **Backend:** Node.js API (custodial escrow MVP)
 
@@ -121,7 +121,7 @@ Populates testnet with:
 ## 🚀 Roadmap
 
 * [x] Testnet MVP (NFT mint, custody logs, escrow release)
-* [ ] Production pilot with cooperative aggregator
+* [X] Production pilot with cooperative aggregator
 * [ ] Smart contract escrow (Hedera EVM)
 * [ ] AI assistant integration (voice guidance for farmers)
 * [ ] Analytics dashboard (spoilage reduction, custody KPIs)
@@ -137,8 +137,8 @@ We welcome collaborators! Current needs:
 * Data Scientist (dashboards, KPIs)
 
 ---
-**This project is still under debugging and correction. The DIRA team acknowledges that there may be errors in the files and is currently working on perfecting these project files
-  These changes include but not limited to AI integration for actual automation using DIRA customized AI systems at minimal costs for easy execution of app chain sequence.
+**This project is still under debugging and correction. The DIRA team acknowledges that there may be errors in the files and is currently working on perfecting these project files.
+  These changes include, but are not limited to, AI integration for actual automation using DIRA customized AI systems at minimal costs for easy execution of the app chain sequence.
 
 **Updated project scope to include animal farming.
 
